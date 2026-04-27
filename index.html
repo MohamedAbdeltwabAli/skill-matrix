@@ -806,7 +806,7 @@
     /* ═══════════════════════════════════════════════════════
        CONFIGURATION — update these two values
     ═══════════════════════════════════════════════════════ */
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw98FQ4UG4uZtuWAjYQmc_ar31T4Y_GbLrnxzvFW9qBk8LeNP4j-Ho5qz2-e3xqO1ev/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIgRryvalh2EGjcPr71zniksCFYD-6GLEt4-ca_UOKbYQXO5pRNng1F2jH16y8tWYI/exec";
     const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
 
     /* ═══════════════════════════════════════════════════════
@@ -1072,10 +1072,10 @@
         <p class="q-text"><span class="q-number">س${qi + 1}</span> ${q.q}</p>
         <div class="tf-options">
           <label class="tf-option true-opt">
-            <input type="radio" name="q${qi}" value="صح"/> صح ✓
+            <input type="radio" name="q${qi}" value="1"/> صح ✓
           </label>
           <label class="tf-option false-opt">
-            <input type="radio" name="q${qi}" value="خطأ"/> خطأ ✗
+            <input type="radio" name="q${qi}" value="0"/> خطأ ✗
           </label>
         </div>`;
         }
