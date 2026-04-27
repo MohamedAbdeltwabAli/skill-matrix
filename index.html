@@ -806,7 +806,7 @@
     /* ═══════════════════════════════════════════════════════
        CONFIGURATION — update these two values
     ═══════════════════════════════════════════════════════ */
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIgRryvalh2EGjcPr71zniksCFYD-6GLEt4-ca_UOKbYQXO5pRNng1F2jH16y8tWYI/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxo4mBSqsU7PHUIfb4zN7Uiu25c8Bx2hbLTI_fvACtxySzaGYH86WCqYlPnOmZzTgme/exec";
     const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
 
     /* ═══════════════════════════════════════════════════════
@@ -990,37 +990,46 @@
         err.textContent = "يرجى إدخال كلمة المرور الشخصية";
         return;
       }
-      if (password !== employee.password) {
-        err.style.display = "block";
-        err.textContent = "⚠️ كلمة المرور غير صحيحة. تحقق من الكلمة المرسلة إليك.";
-        return;
-      }
 
-      // Use pre-fetched questions if available, otherwise fetch now
-      if (questionsCache[employee.department]) {
-        currentUser.displayName = employee.name;
-        currentDept = employee.department;
-        currentQuestions = questionsCache[employee.department];
-        document.getElementById("dept-badge").textContent = "القسم: " + currentDept;
-        renderUserBar("user-bar-exam");
-        renderQuestions();
-        startTimer();
-        showStep("step-exam");
-        btn.disabled = false;
-        btn.textContent = "بدء الاختبار";
-        return;
-      }
-
-      // Fallback: fetch now (first time or cache miss)
+      // Fix 1: verify password SERVER-SIDE — password never stored in browser
       err.style.display = "none";
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> جاري تحميل الأسئلة...';
+      btn.innerHTML = '<span class="spinner"></span> جاري التحقق...';
 
       try {
-        const res = await fetch(APPS_SCRIPT_URL + "?action=getQuestions&department=" + encodeURIComponent(employee.department));
-        const data = await res.json();
+        const verifyRes = await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ action: "verifyEmployee", sap, password })
+        });
+        const verifyData = await verifyRes.json();
 
-        if (!data.questions || data.questions.length === 0) {
+        if (!verifyData.valid) {
+          err.style.display = "block";
+          err.textContent = verifyData.error === "WRONG_PASSWORD"
+            ? "⚠️ كلمة المرور غير صحيحة. تحقق من الكلمة المرسلة إليك."
+            : "رقم SAP غير معروف. يرجى التواصل مع المهندس المسؤول.";
+          btn.disabled = false;
+          btn.textContent = "بدء الاختبار";
+          return;
+        }
+
+        // Password valid — use verified name & dept from server
+        currentUser.displayName = verifyData.name;
+        currentDept = verifyData.department;
+
+        // Use pre-fetched questions if available, otherwise fetch now
+        if (questionsCache[currentDept]) {
+          currentQuestions = questionsCache[currentDept];
+          launchExam();
+          return;
+        }
+
+        btn.innerHTML = '<span class="spinner"></span> جاري تحميل الأسئلة...';
+        const qRes = await fetch(APPS_SCRIPT_URL + "?action=getQuestions&department=" + encodeURIComponent(currentDept));
+        const qData = await qRes.json();
+
+        if (!qData.questions || qData.questions.length === 0) {
           err.style.display = "block";
           err.textContent = "⚠️ لا توجد أسئلة لهذا القسم. يرجى التواصل مع المهندس المسؤول.";
           btn.disabled = false;
@@ -1028,25 +1037,29 @@
           return;
         }
 
-        currentUser.displayName = employee.name;
-        currentDept = employee.department;
-        currentQuestions = data.questions;
-
-        document.getElementById("dept-badge").textContent = "القسم: " + currentDept;
-        renderUserBar("user-bar-exam");
-        renderQuestions();
-        startTimer();
-        showStep("step-exam");
+        currentQuestions = qData.questions;
+        launchExam();
 
       } catch (e) {
         err.style.display = "block";
-        err.textContent = "⚠️ تعذر تحميل الأسئلة. تحقق من الاتصال بالإنترنت وأعد المحاولة.";
-        console.error("Questions fetch failed:", e);
+        err.textContent = "⚠️ تعذر التحقق. تحقق من الاتصال بالإنترنت وأعد المحاولة.";
+        console.error("Verify/fetch failed:", e);
+        btn.disabled = false;
+        btn.textContent = "بدء الاختبار";
       }
+    }
 
+    function launchExam() {
+      const btn = document.getElementById("btn-start");
+      document.getElementById("dept-badge").textContent = "القسم: " + currentDept;
+      renderUserBar("user-bar-exam");
+      renderQuestions();
+      startTimer();
+      showStep("step-exam");
       btn.disabled = false;
       btn.textContent = "بدء الاختبار";
     }
+
 
     /* ═══════════════════════════════════════════════════════
        RENDER QUESTIONS
