@@ -1,309 +1,906 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Factory Skill Matrix – Test</title>
+  <title>نظام تقييم الكفاءة - العربي جروب</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
+    :root {
+      --primary: #1a3a6b;
+      --primary-light: #2a52a0;
+      --accent: #e8b84b;
+      --accent-dark: #c99a30;
+      --bg: #0d1f3c;
+      --card: rgba(255,255,255,0.97);
+      --text: #1a1a2e;
+      --text-muted: #5a6a8a;
+      --success: #1a7a4a;
+      --danger: #c0392b;
+      --border: #dde3f0;
+      --radius: 16px;
+      --shadow: 0 8px 40px rgba(0,0,0,0.18);
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
+      font-family: 'Tajawal', sans-serif;
       min-height: 100vh;
+      background: var(--bg);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
     }
+
+    .bg-logo {
+      position: fixed;
+      inset: 0;
+      background: url('logo.png') center/cover no-repeat;
+      opacity: 0.07;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(13,31,60,0.96) 0%, rgba(26,58,107,0.93) 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
     .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      padding: 36px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px 36px 32px;
       width: 100%;
-      max-width: 560px;
+      max-width: 600px;
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.5s ease;
     }
-    h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; }
-    .subtitle { font-size: 13px; color: #888; margin-bottom: 28px; }
-    label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
-    input {
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .logo-header img {
+      height: 64px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .logo-header h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.4;
+    }
+
+    .logo-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .divider {
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+      margin: 20px 0;
+    }
+
+    /* Google Sign-In section */
+    .signin-section {
+      text-align: center;
+      padding: 20px 0 10px;
+    }
+
+    .signin-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .signin-section p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    #g_id_signin {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* User info bar */
+    .user-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f0f4ff;
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .user-bar img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+    }
+
+    .user-bar .user-info { flex: 1; }
+    .user-bar .user-name { font-size: 14px; font-weight: 700; color: var(--primary); }
+    .user-bar .user-email { font-size: 11px; color: var(--text-muted); }
+
+    /* SAP step */
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input[type=text], input[type=number] {
       width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 18px;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: 'Tajawal', sans-serif;
+      color: var(--text);
       outline: none;
       transition: border-color 0.2s;
+      margin-bottom: 18px;
+      background: #fafbff;
+      text-align: right;
     }
-    input:focus { border-color: #4f46e5; }
-    .badge {
-      display: inline-block;
-      background: #eef2ff;
-      color: #4f46e5;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
+
+    input:focus { border-color: var(--primary-light); background: #fff; }
+
+    .error-box {
+      background: #fff5f5;
+      color: var(--danger);
+      border: 1px solid #fdc5c5;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+      text-align: center;
+    }
+
+    .info-box {
+      background: #f0f7ff;
+      color: var(--primary);
+      border: 1px solid #b8d4f8;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+    }
+
+    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      background: #f0f4ff;
+      color: var(--primary);
+      margin-top: 10px;
+    }
+
+    /* Department badge */
+    .dept-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      padding: 6px 16px;
       border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    /* Timer */
+    .timer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8f9ff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
       margin-bottom: 20px;
     }
-    .error {
-      background: #fff0f0;
-      color: #c0392b;
-      border: 1px solid #f5c6c6;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 13px;
-      margin-bottom: 18px;
-      display: none;
+
+    .timer-label { font-size: 13px; color: var(--text-muted); }
+
+    .timer-display {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      transition: color 0.3s;
     }
-    .question-block { margin-bottom: 22px; }
-    .question-block p { font-size: 14px; font-weight: 600; color: #222; margin-bottom: 10px; }
+
+    .timer-display.warning { color: #e67e22; }
+    .timer-display.danger  { color: var(--danger); animation: pulse 0.8s infinite; }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    .timer-progress {
+      height: 4px;
+      background: #e0e6f0;
+      border-radius: 2px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .timer-progress-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+      transition: width 1s linear, background 0.3s;
+    }
+
+    /* Questions */
+    .question-block {
+      background: #fafbff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+
+    .question-block .q-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      line-height: 1.7;
+    }
+
+    .q-number {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+    }
+
     .option {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 9px 14px;
-      border: 1px solid #e5e7eb;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
       border-radius: 8px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       cursor: pointer;
       font-size: 13px;
-      color: #333;
-      transition: background 0.15s, border-color 0.15s;
+      color: var(--text);
+      transition: all 0.15s;
+      background: #fff;
     }
-    .option:hover { background: #f5f3ff; border-color: #c4b5fd; }
-    .option input[type=radio] { accent-color: #4f46e5; }
-    button {
-      width: 100%;
+
+    .option:hover { background: #f0f4ff; border-color: var(--primary-light); }
+    .option input[type=radio] { accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* True/False special styling */
+    .tf-options { display: flex; gap: 10px; }
+
+    .tf-option {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       padding: 12px;
-      background: #4f46e5;
-      color: #fff;
-      border: none;
+      border: 1.5px solid var(--border);
       border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
       cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.2s;
+      font-size: 14px;
+      font-weight: 700;
+      transition: all 0.15s;
+      background: #fff;
     }
-    button:hover { background: #4338ca; }
-    .result {
+
+    .tf-option.true-opt:hover  { background: #f0fff6; border-color: var(--success); color: var(--success); }
+    .tf-option.false-opt:hover { background: #fff5f5; border-color: var(--danger);  color: var(--danger);  }
+    .tf-option input[type=radio] { accent-color: var(--primary); width: 16px; height: 16px; }
+
+    /* Result */
+    .result-section { text-align: center; padding: 10px 0; }
+
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 20px rgba(26,58,107,0.3);
+    }
+
+    .score-circle .score-num { font-size: 32px; font-weight: 800; color: #fff; line-height: 1; }
+    .score-circle .score-of  { font-size: 13px; color: rgba(255,255,255,0.7); }
+
+    .result-msg {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .result-msg.pass { color: var(--success); }
+    .result-msg.fail { color: var(--danger); }
+
+    .result-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+    /* Blocked screen */
+    .blocked-section { text-align: center; padding: 20px 0; }
+    .blocked-icon { font-size: 48px; margin-bottom: 16px; }
+    .blocked-section h2 { font-size: 18px; font-weight: 700; color: var(--danger); margin-bottom: 8px; }
+    .blocked-section p  { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+    /* Steps visibility */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
       text-align: center;
-      padding: 24px 0 8px;
+      margin-top: 20px;
+      color: rgba(255,255,255,0.45);
+      font-size: 11px;
+      line-height: 1.8;
+      font-family: Arial, sans-serif;
+      direction: ltr;
     }
-    .result .score { font-size: 48px; font-weight: 700; color: #4f46e5; }
-    .result .score-label { font-size: 14px; color: #888; margin-top: 4px; }
-    .result .msg { font-size: 15px; color: #333; margin-top: 16px; font-weight: 500; }
-    #step-lookup, #step-exam, #step-result { display: none; }
-    #step-lookup { display: block; }
-    hr { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; }
+
+    footer a { color: rgba(255,255,255,0.55); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
   </style>
 </head>
 <body>
+
+<div class="bg-logo"></div>
+<div class="bg-overlay"></div>
+
 <div class="card">
-  <h1>Factory Skill Matrix</h1>
-  <p class="subtitle">Test version — enter your SAP number to begin</p>
 
-  <!-- STEP 1: Identity lookup -->
-  <div id="step-lookup">
-    <label for="inp-name">Full name</label>
-    <input type="text" id="inp-name" placeholder="e.g. Ahmed Hassan" />
-
-    <label for="inp-sap">SAP number</label>
-    <input type="text" id="inp-sap" placeholder="e.g. 10042" />
-
-    <div class="error" id="err-msg">SAP number not recognized. Please contact HR.</div>
-
-    <button onclick="startExam()">Start exam</button>
+  <!-- Header -->
+  <div class="logo-header">
+    <img src="logo.png" alt="العربي جروب" onerror="this.style.display='none'"/>
+    <h1>نظام تقييم الكفاءة المهنية</h1>
+    <p>شركة العربي جروب للأجهزة المنزلية</p>
   </div>
+  <div class="divider"></div>
 
-  <!-- STEP 2: Exam questions -->
-  <div id="step-exam">
-    <div class="badge" id="dept-badge"></div>
-    <div id="questions-container"></div>
-    <hr/>
-    <button onclick="submitExam()">Submit answers</button>
-  </div>
-
-  <!-- STEP 3: Result -->
-  <div id="step-result">
-    <div class="result">
-      <div class="score" id="score-display"></div>
-      <div class="score-label">correct answers</div>
-      <div class="msg" id="result-msg"></div>
+  <!-- STEP 1: Google Sign-In -->
+  <div class="step active" id="step-signin">
+    <div class="signin-section">
+      <h2>مرحباً بك</h2>
+      <p>يرجى تسجيل الدخول بحساب Google الخاص بك للمتابعة.<br/>سيتم تسجيل بريدك الإلكتروني لضمان نزاهة الاختبار.</p>
+      <div id="g_id_onload"
+        data-client_id="345260370366-fv81sbdbl7ts16j20rqn2vpjecsje3he.apps.googleusercontent.com"
+        data-callback="handleGoogleSignIn"
+        data-auto_prompt="false">
+      </div>
+      <div id="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="signin_with"
+        data-shape="rectangular"
+        data-logo_alignment="left">
+      </div>
     </div>
-    <hr/>
-    <button onclick="resetApp()" style="background:#6b7280;">Take another exam</button>
   </div>
+
+  <!-- STEP 2: SAP Entry -->
+  <div class="step" id="step-sap">
+    <div class="user-bar" id="user-bar"></div>
+    <p class="step-title">أدخل رقم SAP الخاص بك</p>
+    <label for="inp-sap">رقم SAP</label>
+    <input type="text" id="inp-sap" placeholder="مثال: 10001" inputmode="numeric"/>
+    <div class="error-box" id="err-sap"></div>
+    <button class="btn btn-primary" id="btn-start" onclick="startExam()">بدء الاختبار</button>
+  </div>
+
+  <!-- STEP 3: Exam -->
+  <div class="step" id="step-exam">
+    <div class="user-bar" id="user-bar-exam"></div>
+    <div class="dept-badge" id="dept-badge"></div>
+
+    <div class="timer-bar">
+      <span class="timer-label">الوقت المتبقي</span>
+      <span class="timer-display" id="timer-display">15:00</span>
+    </div>
+    <div class="timer-progress"><div class="timer-progress-inner" id="timer-bar"></div></div>
+
+    <div id="questions-container"></div>
+
+    <div class="error-box" id="err-exam"></div>
+    <hr/>
+    <button class="btn btn-primary" onclick="submitExam()">تسليم الإجابات</button>
+  </div>
+
+  <!-- STEP 4: Result -->
+  <div class="step" id="step-result">
+    <div class="result-section">
+      <div class="score-circle">
+        <div class="score-num" id="score-num"></div>
+        <div class="score-of"  id="score-of"></div>
+      </div>
+      <div class="result-msg" id="result-msg"></div>
+      <div class="result-sub" id="result-sub"></div>
+      <div class="info-box">تم حفظ نتيجتك بنجاح في قاعدة البيانات</div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Blocked (already took exam) -->
+  <div class="step" id="step-blocked">
+    <div class="blocked-section">
+      <div class="blocked-icon">🚫</div>
+      <h2>لا يمكن إعادة الاختبار</h2>
+      <p>لقد قمت بإجراء هذا الاختبار مسبقاً.<br/>لا يُسمح بأكثر من محاولة واحدة لكل موظف.<br/>يرجى التواصل مع المشرف إذا كنت تعتقد أن هذا خطأ.</p>
+    </div>
+  </div>
+
 </div>
 
+<!-- Footer -->
+<footer>
+  Developed by: Mohamed Abdeltwab Ali — Process Engineer — WM Group<br/>
+  <a href="mailto:mmesba01@elaraby.com">mmesba01@elaraby.com</a>
+</footer>
+
 <script>
-  /* ── SAP → Department lookup table ─────────────────────────── */
-  const SAP_TABLE = {
-    "10001": "Welding",
-    "10002": "Welding",
-    "10003": "Quality Control",
-    "10004": "Quality Control",
-    "10005": "Maintenance",
-    "10006": "Maintenance",
-    "10007": "Assembly",
-    "10008": "Assembly"
+/* ═══════════════════════════════════════════════════════
+   CONFIGURATION — update these two values
+═══════════════════════════════════════════════════════ */
+const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
+
+/* ═══════════════════════════════════════════════════════
+   SAP → DEPARTMENT LOOKUP
+═══════════════════════════════════════════════════════ */
+const SAP_TABLE = {
+  "10001": "البلاستيك",
+  "10002": "البلاستيك",
+  "10003": "الكلينشينج",
+  "10004": "الكلينشينج",
+  "10005": "تجميع خط هوفر",
+  "10006": "تجميع خط هوفر",
+  "10007": "تجميع خط تورنيدو",
+  "10008": "تجميع خط تورنيدو",
+  "10009": "التغليف",
+  "10010": "التغليف",
+  "10011": "تحكم في الجودة",
+  "10012": "تحكم في الجودة",
+  "10013": "فحص الجودة",
+  "10014": "فحص الجودة",
+  "10015": "صيانة المرتجعات",
+  "10016": "صيانة المرتجعات"
+};
+
+/* ═══════════════════════════════════════════════════════
+   QUESTIONS BANK
+═══════════════════════════════════════════════════════ */
+const QUESTIONS = {
+  "البلاستيك": [
+    {
+      type: "mcq",
+      q: "ما هي درجة الحرارة المناسبة لحقن البلاستيك في القوالب؟",
+      options: ["50-100 درجة مئوية", "150-300 درجة مئوية", "300-500 درجة مئوية", "أقل من 50 درجة مئوية"],
+      answer: 1
+    },
+    {
+      type: "tf",
+      q: "يجب فحص القالب البلاستيكي قبل بدء الإنتاج للتأكد من نظافته وخلوه من أي بقايا",
+      answer: "صح"
+    }
+  ],
+  "الكلينشينج": [
+    {
+      type: "mcq",
+      q: "ما هو الهدف الرئيسي من عملية الكلينشينج في تصنيع الغسالات؟",
+      options: ["طلاء الأجزاء المعدنية", "تثبيت الأجزاء المعدنية معاً بدون لحام أو براغي", "قياس سماكة الصفائح", "تنظيف الأجزاء قبل التجميع"],
+      answer: 1
+    },
+    {
+      type: "tf",
+      q: "يمكن استخدام الكلينشينج لتثبيت صفائح معدنية بسماكات مختلفة تماماً دون أي قيود",
+      answer: "خطأ"
+    }
+  ],
+  "تجميع خط هوفر": [
+    {
+      type: "mcq",
+      q: "عند تجميع غسالة Hoover، ما الذي يجب التحقق منه قبل تركيب الباب؟",
+      options: ["لون الغسالة", "محاذاة المفصلات وسلامة الحشية المطاطية", "وزن الغسالة", "رقم الموديل فقط"],
+      answer: 1
+    },
+    {
+      type: "tf",
+      q: "يجب اختبار الغسالة بالماء على خط التجميع قبل إرسالها للتغليف",
+      answer: "صح"
+    }
+  ],
+  "تجميع خط تورنيدو": [
+    {
+      type: "mcq",
+      q: "ما الفرق الرئيسي الذي يجب على عامل التجميع مراعاته عند التبديل بين خط Tornado وخط Hoover؟",
+      options: ["لا يوجد فرق", "اختلاف المواصفات الفنية وتسلسل خطوات التجميع", "فقط اختلاف اللون", "اختلاف عدد العمال فقط"],
+      answer: 1
+    },
+    {
+      type: "tf",
+      q: "يمكن استخدام نفس العدد والأدوات بنفس إعداداتها عند التبديل بين خط Tornado وHoover دون أي تعديل",
+      answer: "خطأ"
+    }
+  ],
+  "التغليف": [
+    {
+      type: "mcq",
+      q: "ما هو الهدف من وضع الفوم الواقي داخل صندوق التغليف؟",
+      options: ["تزيين المنتج", "حماية الغسالة من الصدمات أثناء الشحن والنقل", "تقليل وزن الصندوق", "إخفاء عيوب المنتج"],
+      answer: 1
+    },
+    {
+      type: "tf",
+      q: "يجب التحقق من أن بيانات الباركود على الصندوق تطابق موديل الغسالة بداخله قبل إغلاق الصندوق",
+      answer: "صح"
+    }
+  ],
+  "تحكم في الجودة": [
+    {
+      type: "mcq",
+      q: "ما المقصود بمخطط السيطرة (Control Chart) في ضبط الجودة؟",
+      options: ["رسم بياني لمتابعة أداء العملية واكتشاف الانحرافات", "قائمة بأسماء العمال", "جدول مواعيد الإنتاج", "سجل الحوادث اليومية"],
+      answer: 0
+    },
+    {
+      type: "tf",
+      q: "إذا كانت قيمة Cpk أكبر من 1.33 فهذا يعني أن العملية غير قادرة على تحقيق المواصفات المطلوبة",
+      answer: "خطأ"
+    }
+  ],
+  "فحص الجودة": [
+    {
+      type: "mcq",
+      q: "عند فحص غسالة وإيجاد عيب مظهري طفيف، ما هو الإجراء الصحيح؟",
+      options: ["تجاهله وإرسال الغسالة للتغليف", "تسجيله وعزل الوحدة لمراجعة المشرف", "إصلاحه بدون توثيق", "إرجاعها مباشرة للمورد"],
+      answer: 1
+    },
+    {
+      type: "tf",
+      q: "يكفي الفحص البصري وحده للتحقق من جودة الغسالة دون الحاجة لاختبارات تشغيلية",
+      answer: "خطأ"
+    }
+  ],
+  "صيانة المرتجعات": [
+    {
+      type: "mcq",
+      q: "ما هي أول خطوة يجب اتخاذها عند استلام غسالة مرتجعة من العميل؟",
+      options: ["البدء فوراً في التفكيك", "تسجيل بيانات الوحدة وسبب الإرجاع وفحصها أولاً", "استبدالها بوحدة جديدة مباشرة", "إرسالها للمخزن"],
+      answer: 1
+    },
+    {
+      type: "tf",
+      q: "يجب توثيق كل عملية إصلاح للمرتجعات مع ذكر سبب العطل والإجراء المتخذ",
+      answer: "صح"
+    }
+  ]
+};
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+let currentUser = null;
+let currentDept = "";
+let currentQuestions = [];
+let timerInterval = null;
+let timeLeft = EXAM_DURATION_SECONDS;
+
+/* ═══════════════════════════════════════════════════════
+   GOOGLE SIGN-IN
+═══════════════════════════════════════════════════════ */
+function handleGoogleSignIn(response) {
+  const payload = parseJwt(response.credential);
+  currentUser = {
+    name:    payload.name,
+    email:   payload.email,
+    picture: payload.picture
   };
+  showStep("step-sap");
+  renderUserBar("user-bar");
+  checkIfAlreadyTook();
+}
 
-  /* ── Questions per department ───────────────────────────────── */
-  const QUESTIONS = {
-    "Welding": [
-      {
-        q: "What is the correct PPE required before starting a welding operation?",
-        options: ["Safety glasses only", "Welding helmet, gloves, and fire-resistant jacket", "Hard hat and vest", "No PPE needed indoors"],
-        answer: 1
-      },
-      {
-        q: "What gas is commonly used in MIG welding as a shielding gas?",
-        options: ["Oxygen", "Nitrogen", "Argon or CO₂ mix", "Hydrogen"],
-        answer: 2
-      },
-      {
-        q: "What does a porosity defect in a weld indicate?",
-        options: ["Too much heat", "Trapped gas during solidification", "Wrong electrode angle", "Correct weld"],
-        answer: 1
-      }
-    ],
-    "Quality Control": [
-      {
-        q: "Which tool is used to measure the internal diameter of a bore?",
-        options: ["Vernier caliper", "Bore gauge", "Micrometer", "Tape measure"],
-        answer: 1
-      },
-      {
-        q: "What does 'Cpk' measure in a process?",
-        options: ["Cycle time", "Process capability relative to spec limits", "Cost per unit", "Customer satisfaction"],
-        answer: 1
-      },
-      {
-        q: "In a control chart, what does a point outside the control limits indicate?",
-        options: ["Normal variation", "Special cause variation", "Process improvement", "Random noise"],
-        answer: 1
-      }
-    ],
-    "Maintenance": [
-      {
-        q: "What does LOTO stand for in maintenance safety?",
-        options: ["Lock Out Tag Out", "Load Over Transfer Output", "Line Off Test Operation", "None of the above"],
-        answer: 0
-      },
-      {
-        q: "What is preventive maintenance?",
-        options: ["Fixing equipment after it breaks", "Scheduled maintenance to prevent failures", "Ignoring minor faults", "Only cleaning machines"],
-        answer: 1
-      },
-      {
-        q: "Which type of bearing failure is caused by insufficient lubrication?",
-        options: ["Fatigue spalling", "Fretting", "Smearing", "Electrical pitting"],
-        answer: 2
-      }
-    ],
-    "Assembly": [
-      {
-        q: "What does a torque wrench ensure during assembly?",
-        options: ["Fasteners are tightened to the correct force", "Parts are aligned correctly", "Welding quality", "Paint adhesion"],
-        answer: 0
-      },
-      {
-        q: "What is a Poka-Yoke device?",
-        options: ["A Japanese lunch box", "An error-proofing mechanism", "A torque specification sheet", "A type of conveyor"],
-        answer: 1
-      },
-      {
-        q: "What should you do if you find a defective part during assembly?",
-        options: ["Continue and report later", "Discard it and say nothing", "Tag it and remove it from the line", "Force it to fit"],
-        answer: 2
-      }
-    ]
-  };
+function parseJwt(token) {
+  const base64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+  return JSON.parse(decodeURIComponent(atob(base64).split('').map(c =>
+    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  ).join('')));
+}
 
-  let currentUser = {};
-  let currentDept = "";
+function renderUserBar(id) {
+  document.getElementById(id).innerHTML = `
+    <img src="${currentUser.picture}" alt=""/>
+    <div class="user-info">
+      <div class="user-name">${currentUser.name}</div>
+      <div class="user-email">${currentUser.email}</div>
+    </div>`;
+}
 
-  function startExam() {
-    const name = document.getElementById("inp-name").value.trim();
-    const sap  = document.getElementById("inp-sap").value.trim();
-    const err  = document.getElementById("err-msg");
+/* ═══════════════════════════════════════════════════════
+   CHECK IF ALREADY TOOK EXAM (via Apps Script)
+═══════════════════════════════════════════════════════ */
+async function checkIfAlreadyTook() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") return;
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + "?action=check&email=" + encodeURIComponent(currentUser.email));
+    const data = await res.json();
+    if (data.exists) showStep("step-blocked");
+  } catch(e) { console.warn("Check failed:", e); }
+}
 
-    if (!name || !sap) { err.style.display = "block"; err.textContent = "Please enter both your name and SAP number."; return; }
+/* ═══════════════════════════════════════════════════════
+   START EXAM
+═══════════════════════════════════════════════════════ */
+function startExam() {
+  const sap = document.getElementById("inp-sap").value.trim();
+  const err = document.getElementById("err-sap");
 
-    const dept = SAP_TABLE[sap];
-    if (!dept) { err.style.display = "block"; err.textContent = "SAP number not recognized. Please contact HR."; return; }
-
-    err.style.display = "none";
-    currentUser = { name, sap };
-    currentDept = dept;
-
-    document.getElementById("dept-badge").textContent = dept + " — " + name;
-    renderQuestions(QUESTIONS[dept]);
-
-    document.getElementById("step-lookup").style.display = "none";
-    document.getElementById("step-exam").style.display   = "block";
+  if (!sap) {
+    err.style.display = "block";
+    err.textContent = "يرجى إدخال رقم SAP الخاص بك";
+    return;
   }
 
-  function renderQuestions(questions) {
-    const container = document.getElementById("questions-container");
-    container.innerHTML = "";
-    questions.forEach((q, qi) => {
-      const block = document.createElement("div");
-      block.className = "question-block";
-      block.innerHTML = `<p>Q${qi+1}. ${q.q}</p>` +
-        q.options.map((opt, oi) =>
-          `<label class="option"><input type="radio" name="q${qi}" value="${oi}"> ${opt}</label>`
-        ).join("");
-      container.appendChild(block);
+  const dept = SAP_TABLE[sap];
+  if (!dept) {
+    err.style.display = "block";
+    err.textContent = "رقم SAP غير معروف. يرجى التواصل مع قسم الموارد البشرية.";
+    return;
+  }
+
+  err.style.display = "none";
+  currentDept = dept;
+  currentQuestions = shuffle([...QUESTIONS[dept]]);
+
+  document.getElementById("dept-badge").textContent = "القسم: " + dept;
+  renderUserBar("user-bar-exam");
+  renderQuestions();
+  startTimer();
+  showStep("step-exam");
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER QUESTIONS
+═══════════════════════════════════════════════════════ */
+function renderQuestions() {
+  const container = document.getElementById("questions-container");
+  container.innerHTML = "";
+
+  currentQuestions.forEach((q, qi) => {
+    const block = document.createElement("div");
+    block.className = "question-block";
+
+    if (q.type === "mcq") {
+      block.innerHTML = `
+        <p class="q-text"><span class="q-number">س${qi+1}</span> ${q.q}</p>
+        ${q.options.map((opt, oi) => `
+          <label class="option">
+            <input type="radio" name="q${qi}" value="${oi}"/>
+            ${opt}
+          </label>`).join("")}`;
+    } else {
+      block.innerHTML = `
+        <p class="q-text"><span class="q-number">س${qi+1}</span> ${q.q}</p>
+        <div class="tf-options">
+          <label class="tf-option true-opt">
+            <input type="radio" name="q${qi}" value="صح"/> صح ✓
+          </label>
+          <label class="tf-option false-opt">
+            <input type="radio" name="q${qi}" value="خطأ"/> خطأ ✗
+          </label>
+        </div>`;
+    }
+    container.appendChild(block);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   TIMER
+═══════════════════════════════════════════════════════ */
+function startTimer() {
+  timeLeft = EXAM_DURATION_SECONDS;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) { clearInterval(timerInterval); submitExam(true); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  const display = document.getElementById("timer-display");
+  const bar = document.getElementById("timer-bar");
+  const pct = (timeLeft / EXAM_DURATION_SECONDS) * 100;
+
+  display.textContent = String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+  bar.style.width = pct + "%";
+
+  display.classList.remove("warning","danger");
+  if (timeLeft <= 60)  display.classList.add("danger");
+  else if (timeLeft <= 180) display.classList.add("warning");
+
+  if (timeLeft <= 60)
+    bar.style.background = "linear-gradient(90deg, #c0392b, #e74c3c)";
+  else if (timeLeft <= 180)
+    bar.style.background = "linear-gradient(90deg, #e67e22, #f39c12)";
+}
+
+/* ═══════════════════════════════════════════════════════
+   SUBMIT EXAM
+═══════════════════════════════════════════════════════ */
+async function submitExam(autoSubmit = false) {
+  clearInterval(timerInterval);
+
+  let score = 0;
+  let allAnswered = true;
+
+  currentQuestions.forEach((q, qi) => {
+    const sel = document.querySelector(`input[name="q${qi}"]:checked`);
+    if (!sel) { allAnswered = false; return; }
+    const correct = q.type === "mcq"
+      ? parseInt(sel.value) === q.answer
+      : sel.value === q.answer;
+    if (correct) score++;
+  });
+
+  if (!autoSubmit && !allAnswered) {
+    const err = document.getElementById("err-exam");
+    err.style.display = "block";
+    err.textContent = "يرجى الإجابة على جميع الأسئلة قبل التسليم";
+    startTimer();
+    return;
+  }
+
+  const total = currentQuestions.length;
+  const pct   = Math.round((score / total) * 100);
+  const pass  = pct >= 70;
+
+  document.getElementById("score-num").textContent = score + "/" + total;
+  document.getElementById("score-of").textContent  = pct + "%";
+  document.getElementById("result-msg").textContent = pass
+    ? "أحسنت! لقد اجتزت الاختبار بنجاح"
+    : "للأسف، لم تتجاوز الحد الأدنى المطلوب (70%)";
+  document.getElementById("result-msg").className = "result-msg " + (pass ? "pass" : "fail");
+  document.getElementById("result-sub").textContent =
+    "القسم: " + currentDept + " | الاسم: " + currentUser.name;
+
+  showStep("step-result");
+  await saveResult(score, total, pct);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SAVE TO GOOGLE SHEETS
+═══════════════════════════════════════════════════════ */
+async function saveResult(score, total, pct) {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
+    console.log("Result (test mode — no URL set):", {
+      name: currentUser.name, email: currentUser.email,
+      department: currentDept, score: score+"/"+total, percent: pct+"%"
     });
+    return;
   }
-
-  function submitExam() {
-    const questions = QUESTIONS[currentDept];
-    let score = 0;
-    let allAnswered = true;
-
-    questions.forEach((q, qi) => {
-      const selected = document.querySelector(`input[name="q${qi}"]:checked`);
-      if (!selected) { allAnswered = false; return; }
-      if (parseInt(selected.value) === q.answer) score++;
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        action:     "save",
+        name:       currentUser.name,
+        email:      currentUser.email,
+        sap:        document.getElementById("inp-sap").value.trim(),
+        department: currentDept,
+        score:      score + "/" + total,
+        percent:    pct + "%"
+      })
     });
+  } catch(e) { console.error("Save failed:", e); }
+}
 
-    if (!allAnswered) { alert("Please answer all questions before submitting."); return; }
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+function showStep(id) {
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
 
-    const total = questions.length;
-    const pct   = Math.round((score / total) * 100);
-
-    document.getElementById("score-display").textContent = score + "/" + total;
-    document.getElementById("result-msg").textContent =
-      pct >= 70
-        ? "Well done, " + currentUser.name + "! You passed."
-        : "Keep practicing, " + currentUser.name + ". Score below 70%.";
-
-    document.getElementById("step-exam").style.display   = "none";
-    document.getElementById("step-result").style.display = "block";
-
-    console.log("RESULT SAVED (test mode):", {
-      name: currentUser.name,
-      sap:  currentUser.sap,
-      department: currentDept,
-      score: score + "/" + total,
-      percent: pct + "%",
-      date: new Date().toLocaleString()
-    });
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-
-  function resetApp() {
-    document.getElementById("inp-name").value = "";
-    document.getElementById("inp-sap").value  = "";
-    document.getElementById("step-result").style.display = "none";
-    document.getElementById("step-lookup").style.display = "block";
-    currentUser = {};
-    currentDept = "";
-  }
+  return arr;
+}
 </script>
 </body>
 </html>
