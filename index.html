@@ -243,9 +243,65 @@
       text-align: right;
     }
 
-    input:focus {
+    input:focus,
+    textarea:focus {
       border-color: var(--primary-light);
       background: #fff;
+    }
+
+    .suggestion-box {
+      margin-top: 28px;
+      background: linear-gradient(135deg, #f0f4ff 0%, #fafbff 100%);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .suggestion-box .sb-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .suggestion-box .sb-icon {
+      font-size: 22px;
+    }
+
+    .suggestion-box .sb-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .suggestion-box .sb-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .suggestion-box textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'Tajawal', sans-serif;
+      color: var(--text);
+      background: #fff;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      text-align: right;
+      line-height: 1.7;
+    }
+
+    .suggestion-box .sb-optional {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-align: left;
     }
 
     .error-box {
@@ -766,6 +822,18 @@
 
       <div id="questions-container"></div>
 
+      <!-- Suggestion box — after last question -->
+      <div class="suggestion-box">
+        <div class="sb-header">
+          <span class="sb-icon">💡</span>
+          <span class="sb-title">مقترحات لتحسين التقييم</span>
+        </div>
+        <p class="sb-subtitle">شاركنا برأيك حول هذا الاختبار — هل الأسئلة واضحة؟ هل تغطي محاور عملك الفعلية؟ ما الذي تود
+          إضافته أو تغييره؟</p>
+        <textarea id="inp-suggestion" placeholder="اكتب ملاحظاتك أو اقتراحاتك هنا..."></textarea>
+        <p class="sb-optional">• اختياري — لا يؤثّر على نتيجتك</p>
+      </div>
+
       <div class="error-box" id="err-exam"></div>
       <hr />
       <button class="btn btn-primary" onclick="submitExam()">تسليم الإجابات</button>
@@ -806,7 +874,7 @@
     /* ═══════════════════════════════════════════════════════
        CONFIGURATION — update these two values
     ═══════════════════════════════════════════════════════ */
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxo4mBSqsU7PHUIfb4zN7Uiu25c8Bx2hbLTI_fvACtxySzaGYH86WCqYlPnOmZzTgme/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwukPX0tTUN21Mehbwh1lbZoIZ2oGiVHlfy0-cxjVVcen9vzs2Gx10bR29xtvQmCFBP/exec";
     const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
 
     /* ═══════════════════════════════════════════════════════
@@ -1170,6 +1238,7 @@
             email: currentUser.email,
             department: currentDept,
             responses: responses,
+            suggestion: (document.getElementById("inp-suggestion").value || "").trim(),
             timestamp: new Date().toLocaleString("ar-EG", { timeZone: "Africa/Cairo" })
           })
         });
