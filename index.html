@@ -5,6 +5,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>نظام تقييم الكفاءة - العربي جروب</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%231a3a6b'/><text y='.9em' font-size='80' x='10'>🏠</text></svg>"/>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet"/>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
@@ -41,7 +42,6 @@
     .bg-logo {
       position: fixed;
       inset: 0;
-      background: url('logo.png') center/cover no-repeat;
       opacity: 0.07;
       z-index: 0;
       pointer-events: none;
@@ -77,10 +77,10 @@
       margin-bottom: 24px;
     }
 
-    .logo-header img {
-      height: 64px;
-      object-fit: contain;
-      margin-bottom: 10px;
+    .logo-header .logo-icon {
+      font-size: 48px;
+      margin-bottom: 6px;
+      display: block;
     }
 
     .logo-header h1 {
@@ -127,6 +127,31 @@
       display: flex;
       justify-content: center;
     }
+
+    /* Custom Google Sign-In button (fallback/override) */
+    .google-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      color: #3c4043;
+      border: 1.5px solid #dadce0;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .google-btn:hover {
+      background: #f8f9fa;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transform: translateY(-1px);
+    }
+    .google-btn svg { flex-shrink: 0; }
+    .signin-loading { color: var(--text-muted); font-size: 13px; margin-top: 16px; }
 
     /* User info bar */
     .user-bar {
@@ -441,7 +466,7 @@
 
   <!-- Header -->
   <div class="logo-header">
-    <img src="logo.png" alt="العربي جروب" onerror="this.style.display='none'"/>
+    <span class="logo-icon">🏠</span>
     <h1>نظام تقييم الكفاءة المهنية</h1>
     <p>شركة العربي جروب للأجهزة المنزلية</p>
   </div>
@@ -452,20 +477,17 @@
     <div class="signin-section">
       <h2>مرحباً بك</h2>
       <p>يرجى تسجيل الدخول بحساب Google الخاص بك للمتابعة.<br/>سيتم تسجيل بريدك الإلكتروني لضمان نزاهة الاختبار.</p>
-      <div id="g_id_onload"
-        data-client_id="345260370366-fv81sbdbl7ts16j20rqn2vpjecsje3he.apps.googleusercontent.com"
-        data-callback="handleGoogleSignIn"
-        data-auto_prompt="false"
-        data-auto_select="false">
-      </div>
-      <div id="g_id_signin"
-        data-type="standard"
-        data-size="large"
-        data-theme="outline"
-        data-text="signin_with"
-        data-shape="rectangular"
-        data-logo_alignment="left">
-      </div>
+      <!-- Programmatic Google Sign-In button (more reliable than declarative) -->
+      <button class="google-btn" id="btn-google" onclick="triggerGoogleSignIn()">
+        <svg width="20" height="20" viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.4 30.3 0 24 0 14.7 0 6.8 5.4 3 13.3l7.8 6C12.7 13.4 17.9 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.9-2.2 5.4-4.7 7l7.3 5.7c4.3-4 6.7-9.9 6.7-16.7z"/>
+          <path fill="#FBBC05" d="M10.8 28.7A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.5 10.7l8.3-6z"/>
+          <path fill="#34A853" d="M24 48c6.3 0 11.6-2.1 15.5-5.7l-7.3-5.7c-2.1 1.4-4.8 2.3-8.2 2.3-6.1 0-11.3-3.9-13.2-9.2l-8.3 6C6.8 42.6 14.7 48 24 48z"/>
+        </svg>
+        تسجيل الدخول بـ Google
+      </button>
+      <p class="signin-loading" id="signin-status"></p>
     </div>
   </div>
 
@@ -678,19 +700,78 @@ let timerInterval = null;
 let timeLeft = EXAM_DURATION_SECONDS;
 
 /* ═══════════════════════════════════════════════════════
-   GOOGLE SIGN-IN
+   GOOGLE SIGN-IN — Programmatic approach
 ═══════════════════════════════════════════════════════ */
+const CLIENT_ID = "345260370366-fv81sbdbl7ts16j20rqn2vpjecsje3he.apps.googleusercontent.com";
+
+// Called once the GSI library has loaded
+function initGoogleSignIn() {
+  if (typeof google === 'undefined' || !google.accounts) {
+    // Library not ready yet — retry after 500ms
+    setTimeout(initGoogleSignIn, 500);
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: CLIENT_ID,
+    callback:  handleGoogleSignIn,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+}
+
+// Called when user clicks the sign-in button
+function triggerGoogleSignIn() {
+  const status = document.getElementById("signin-status");
+  if (typeof google === 'undefined' || !google.accounts) {
+    status.textContent = "⏳ جاري التحميل... يرجى المحاولة مرة أخرى";
+    return;
+  }
+  status.textContent = "";
+  google.accounts.id.prompt((notification) => {
+    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      // One-Tap blocked — fall back to full OAuth popup
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: "openid email profile",
+        callback: (tokenResponse) => {
+          if (tokenResponse.error) {
+            status.textContent = "⚠️ فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.";
+            return;
+          }
+          // Fetch user info from Google
+          fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: { Authorization: "Bearer " + tokenResponse.access_token }
+          })
+          .then(r => r.json())
+          .then(info => handleUserInfo(info))
+          .catch(() => { status.textContent = "⚠️ فشل الحصول على بيانات المستخدم."; });
+        }
+      });
+      client.requestAccessToken();
+    }
+  });
+}
+
+// Called by One-Tap callback (JWT credential)
 function handleGoogleSignIn(response) {
   const payload = parseJwt(response.credential);
+  handleUserInfo(payload);
+}
+
+// Unified handler for user info from any sign-in path
+function handleUserInfo(info) {
   currentUser = {
-    name:    payload.name,
-    email:   payload.email,
-    picture: payload.picture
+    name:    info.name,
+    email:   info.email,
+    picture: info.picture
   };
   showStep("step-sap");
   renderUserBar("user-bar");
   checkIfAlreadyTook();
 }
+
+// Initialize once library loads
+document.addEventListener("DOMContentLoaded", () => setTimeout(initGoogleSignIn, 300));
 
 function parseJwt(token) {
   const base64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
