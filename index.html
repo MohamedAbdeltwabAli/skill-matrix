@@ -806,7 +806,7 @@
     /* ═══════════════════════════════════════════════════════
        CONFIGURATION — update these two values
     ═══════════════════════════════════════════════════════ */
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwUHuDJpTiTDh0-UU7PRNGQUrFblOprDWcvaqI3AR8hipkyxZQsQ35fNbF_NeN5BoSE/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw98FQ4UG4uZtuWAjYQmc_ar31T4Y_GbLrnxzvFW9qBk8LeNP4j-Ho5qz2-e3xqO1ev/exec";
     const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
 
     /* ═══════════════════════════════════════════════════════
@@ -815,6 +815,7 @@
     // Populated at runtime from the "Employees" sheet
     // Structure: { "SAP_NUMBER": { name: "...", department: "..." }, ... }
     let SAP_TABLE = {};
+    let questionsCache = {}; // { department: [questions] } — pre-fetched while employee types password
 
     async function loadEmployees() {
       const status = document.getElementById("signin-status");
@@ -914,6 +915,14 @@
           nameInput.title = "الاسم مجلوب تلقائياً من بيانات الشركة";
           pwdInput.value = ""; // clear on SAP change
           pwdInput.focus();
+
+          // ⚡ Pre-fetch questions in background while employee types password
+          if (!questionsCache[employee.department]) {
+            fetch(APPS_SCRIPT_URL + "?action=getQuestions&department=" + encodeURIComponent(employee.department))
+              .then(r => r.json())
+              .then(d => { if (d.questions) questionsCache[employee.department] = d.questions; })
+              .catch(() => { }); // silent — will retry on button click if needed
+          }
         } else {
           // Hide everything
           preview.style.display = "none";
@@ -987,7 +996,22 @@
         return;
       }
 
-      // Fetch questions from server (answers NOT included in response)
+      // Use pre-fetched questions if available, otherwise fetch now
+      if (questionsCache[employee.department]) {
+        currentUser.displayName = employee.name;
+        currentDept = employee.department;
+        currentQuestions = questionsCache[employee.department];
+        document.getElementById("dept-badge").textContent = "القسم: " + currentDept;
+        renderUserBar("user-bar-exam");
+        renderQuestions();
+        startTimer();
+        showStep("step-exam");
+        btn.disabled = false;
+        btn.textContent = "بدء الاختبار";
+        return;
+      }
+
+      // Fallback: fetch now (first time or cache miss)
       err.style.display = "none";
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> جاري تحميل الأسئلة...';
@@ -1006,7 +1030,7 @@
 
         currentUser.displayName = employee.name;
         currentDept = employee.department;
-        currentQuestions = data.questions; // [{id, type, q, options?}] — no answers
+        currentQuestions = data.questions;
 
         document.getElementById("dept-badge").textContent = "القسم: " + currentDept;
         renderUserBar("user-bar-exam");
