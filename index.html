@@ -1,12 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>نظام تقييم الكفاءة - العربي جروب</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%231a3a6b'/><text y='.9em' font-size='80' x='10'>🏠</text></svg>"/>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%231a3a6b'/><text y='.9em' font-size='80' x='10'>🏠</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
@@ -15,16 +16,21 @@
       --accent: #e8b84b;
       --accent-dark: #c99a30;
       --bg: #0d1f3c;
-      --card: rgba(255,255,255,0.97);
+      --card: rgba(255, 255, 255, 0.97);
       --text: #1a1a2e;
       --text-muted: #5a6a8a;
       --success: #1a7a4a;
       --danger: #c0392b;
       --border: #dde3f0;
       --radius: 16px;
-      --shadow: 0 8px 40px rgba(0,0,0,0.18);
+      --shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Tajawal', sans-serif;
@@ -51,7 +57,7 @@
     .bg-overlay {
       position: fixed;
       inset: 0;
-      background: linear-gradient(135deg, rgba(13,31,60,0.96) 0%, rgba(26,58,107,0.93) 100%);
+      background: linear-gradient(135deg, rgba(13, 31, 60, 0.96) 0%, rgba(26, 58, 107, 0.93) 100%);
       z-index: 0;
       pointer-events: none;
     }
@@ -69,8 +75,15 @@
     }
 
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .logo-header {
@@ -144,15 +157,24 @@
       font-family: 'Tajawal', sans-serif;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
+
     .google-btn:hover {
       background: #f8f9fa;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       transform: translateY(-1px);
     }
-    .google-btn svg { flex-shrink: 0; }
-    .signin-loading { color: var(--text-muted); font-size: 13px; margin-top: 16px; }
+
+    .google-btn svg {
+      flex-shrink: 0;
+    }
+
+    .signin-loading {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 16px;
+    }
 
     /* User info bar */
     .user-bar {
@@ -173,9 +195,20 @@
       border: 2px solid var(--primary);
     }
 
-    .user-bar .user-info { flex: 1; }
-    .user-bar .user-name { font-size: 14px; font-weight: 700; color: var(--primary); }
-    .user-bar .user-email { font-size: 11px; color: var(--text-muted); }
+    .user-bar .user-info {
+      flex: 1;
+    }
+
+    .user-bar .user-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .user-bar .user-email {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
 
     /* SAP step */
     .step-title {
@@ -193,7 +226,8 @@
       margin-bottom: 6px;
     }
 
-    input[type=text], input[type=number] {
+    input[type=text],
+    input[type=number] {
       width: 100%;
       padding: 12px 16px;
       border: 1.5px solid var(--border);
@@ -208,7 +242,10 @@
       text-align: right;
     }
 
-    input:focus { border-color: var(--primary-light); background: #fff; }
+    input:focus {
+      border-color: var(--primary-light);
+      background: #fff;
+    }
 
     .error-box {
       background: #fff5f5;
@@ -251,8 +288,16 @@
       color: #fff;
     }
 
-    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
 
     .btn-secondary {
       background: #f0f4ff;
@@ -286,7 +331,10 @@
       margin-bottom: 20px;
     }
 
-    .timer-label { font-size: 13px; color: var(--text-muted); }
+    .timer-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
 
     .timer-display {
       font-size: 20px;
@@ -296,10 +344,26 @@
       transition: color 0.3s;
     }
 
-    .timer-display.warning { color: #e67e22; }
-    .timer-display.danger  { color: var(--danger); animation: pulse 0.8s infinite; }
+    .timer-display.warning {
+      color: #e67e22;
+    }
 
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    .timer-display.danger {
+      color: var(--danger);
+      animation: pulse 0.8s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.5
+      }
+    }
 
     .timer-progress {
       height: 4px;
@@ -359,11 +423,23 @@
       background: #fff;
     }
 
-    .option:hover { background: #f0f4ff; border-color: var(--primary-light); }
-    .option input[type=radio] { accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
+    .option:hover {
+      background: #f0f4ff;
+      border-color: var(--primary-light);
+    }
+
+    .option input[type=radio] {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
 
     /* True/False special styling */
-    .tf-options { display: flex; gap: 10px; }
+    .tf-options {
+      display: flex;
+      gap: 10px;
+    }
 
     .tf-option {
       flex: 1;
@@ -381,12 +457,29 @@
       background: #fff;
     }
 
-    .tf-option.true-opt:hover  { background: #f0fff6; border-color: var(--success); color: var(--success); }
-    .tf-option.false-opt:hover { background: #fff5f5; border-color: var(--danger);  color: var(--danger);  }
-    .tf-option input[type=radio] { accent-color: var(--primary); width: 16px; height: 16px; }
+    .tf-option.true-opt:hover {
+      background: #f0fff6;
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .tf-option.false-opt:hover {
+      background: #fff5f5;
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .tf-option input[type=radio] {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+    }
 
     /* Result */
-    .result-section { text-align: center; padding: 10px 0; }
+    .result-section {
+      text-align: center;
+      padding: 10px 0;
+    }
 
     .score-circle {
       width: 120px;
@@ -398,11 +491,20 @@
       align-items: center;
       justify-content: center;
       margin: 0 auto 20px;
-      box-shadow: 0 4px 20px rgba(26,58,107,0.3);
+      box-shadow: 0 4px 20px rgba(26, 58, 107, 0.3);
     }
 
-    .score-circle .score-num { font-size: 32px; font-weight: 800; color: #fff; line-height: 1; }
-    .score-circle .score-of  { font-size: 13px; color: rgba(255,255,255,0.7); }
+    .score-circle .score-num {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .score-circle .score-of {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+    }
 
     .result-msg {
       font-size: 18px;
@@ -410,20 +512,52 @@
       margin-bottom: 6px;
     }
 
-    .result-msg.pass { color: var(--success); }
-    .result-msg.fail { color: var(--danger); }
+    .result-msg.pass {
+      color: var(--success);
+    }
 
-    .result-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .result-msg.fail {
+      color: var(--danger);
+    }
+
+    .result-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
 
     /* Blocked screen */
-    .blocked-section { text-align: center; padding: 20px 0; }
-    .blocked-icon { font-size: 48px; margin-bottom: 16px; }
-    .blocked-section h2 { font-size: 18px; font-weight: 700; color: var(--danger); margin-bottom: 8px; }
-    .blocked-section p  { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+    .blocked-section {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .blocked-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .blocked-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--danger);
+      margin-bottom: 8px;
+    }
+
+    .blocked-section p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
 
     /* Steps visibility */
-    .step { display: none; }
-    .step.active { display: block; }
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
 
     /* Footer */
     footer {
@@ -431,21 +565,28 @@
       z-index: 1;
       text-align: center;
       margin-top: 20px;
-      color: rgba(255,255,255,0.45);
+      color: rgba(255, 255, 255, 0.45);
       font-size: 11px;
       line-height: 1.8;
       font-family: Arial, sans-serif;
       direction: ltr;
     }
 
-    footer a { color: rgba(255,255,255,0.55); text-decoration: none; }
-    footer a:hover { color: var(--accent); }
+    footer a {
+      color: rgba(255, 255, 255, 0.55);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
 
     /* Loading spinner */
     .spinner {
       display: inline-block;
-      width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-top-color: #fff;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
@@ -453,384 +594,397 @@
       margin-left: 8px;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
-    hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
   </style>
 </head>
+
 <body>
 
-<div class="bg-logo"></div>
-<div class="bg-overlay"></div>
+  <div class="bg-logo"></div>
+  <div class="bg-overlay"></div>
 
-<div class="card">
+  <div class="card">
 
-  <!-- Header -->
-  <div class="logo-header">
-    <img src="logo.png" alt="العربي جروب" onerror="this.style.display='none'" style="height:64px;object-fit:contain;margin-bottom:10px;"/>
-    <h1>نظام تقييم الكفاءة المهنية</h1>
-    <p>شركة العربي جروب للأجهزة المنزلية</p>
-  </div>
-  <div class="divider"></div>
-
-  <!-- STEP 1: Google Sign-In -->
-  <div class="step active" id="step-signin">
-    <div class="signin-section">
-      <h2>مرحباً بك</h2>
-      <p>يرجى تسجيل الدخول بحساب Google الخاص بك للمتابعة.<br/>سيتم تسجيل بريدك الإلكتروني لضمان نزاهة الاختبار.</p>
-      <!-- Google renders its official button here -->
-      <div id="google-btn-container" style="display:flex;justify-content:center;"></div>
-      <p class="signin-loading" id="signin-status"></p>
+    <!-- Header -->
+    <div class="logo-header">
+      <img src="logo.png" alt="العربي جروب" onerror="this.style.display='none'"
+        style="height:64px;object-fit:contain;margin-bottom:10px;" />
+      <h1>نظام تقييم الكفاءة المهنية</h1>
+      <p>شركة العربي جروب للأجهزة المنزلية</p>
     </div>
-  </div>
+    <div class="divider"></div>
 
-  <!-- STEP 2: SAP Entry -->
-  <div class="step" id="step-sap">
-    <div class="user-bar" id="user-bar"></div>
-    <p class="step-title">أدخل بياناتك للبدء</p>
-    <label for="inp-name">الاسم الكامل</label>
-    <input type="text" id="inp-name" placeholder="مثال: محمد أحمد"/>
-    <label for="inp-sap">رقم SAP</label>
-    <input type="text" id="inp-sap" placeholder="مثال: 10001" inputmode="numeric"/>
-    <div class="error-box" id="err-sap"></div>
-    <button class="btn btn-primary" id="btn-start" onclick="startExam()">بدء الاختبار</button>
-  </div>
-
-  <!-- STEP 3: Exam -->
-  <div class="step" id="step-exam">
-    <div class="user-bar" id="user-bar-exam"></div>
-    <div class="dept-badge" id="dept-badge"></div>
-
-    <div class="timer-bar">
-      <span class="timer-label">الوقت المتبقي</span>
-      <span class="timer-display" id="timer-display">15:00</span>
-    </div>
-    <div class="timer-progress"><div class="timer-progress-inner" id="timer-bar"></div></div>
-
-    <div id="questions-container"></div>
-
-    <div class="error-box" id="err-exam"></div>
-    <hr/>
-    <button class="btn btn-primary" onclick="submitExam()">تسليم الإجابات</button>
-  </div>
-
-  <!-- STEP 4: Result -->
-  <div class="step" id="step-result">
-    <div class="result-section">
-      <div class="score-circle">
-        <div class="score-num" id="score-num"></div>
-        <div class="score-of"  id="score-of"></div>
+    <!-- STEP 1: Google Sign-In -->
+    <div class="step active" id="step-signin">
+      <div class="signin-section">
+        <h2>مرحباً بك</h2>
+        <p>يرجى تسجيل الدخول بحساب Google الخاص بك للمتابعة.<br />سيتم تسجيل بريدك الإلكتروني لضمان نزاهة الاختبار.</p>
+        <!-- Google renders its official button here -->
+        <div id="google-btn-container" style="display:flex;justify-content:center;"></div>
+        <p class="signin-loading" id="signin-status"></p>
       </div>
-      <div class="result-msg" id="result-msg"></div>
-      <div class="result-sub" id="result-sub"></div>
-      <div class="info-box">تم حفظ نتيجتك بنجاح في قاعدة البيانات</div>
     </div>
+
+    <!-- STEP 2: SAP Entry -->
+    <div class="step" id="step-sap">
+      <div class="user-bar" id="user-bar"></div>
+      <p class="step-title">أدخل بياناتك للبدء</p>
+      <label for="inp-name">الاسم الكامل</label>
+      <input type="text" id="inp-name" placeholder="مثال: محمد أحمد" />
+      <label for="inp-sap">رقم SAP</label>
+      <input type="text" id="inp-sap" placeholder="مثال: 10001" inputmode="numeric" />
+      <div class="error-box" id="err-sap"></div>
+      <button class="btn btn-primary" id="btn-start" onclick="startExam()">بدء الاختبار</button>
+    </div>
+
+    <!-- STEP 3: Exam -->
+    <div class="step" id="step-exam">
+      <div class="user-bar" id="user-bar-exam"></div>
+      <div class="dept-badge" id="dept-badge"></div>
+
+      <div class="timer-bar">
+        <span class="timer-label">الوقت المتبقي</span>
+        <span class="timer-display" id="timer-display">15:00</span>
+      </div>
+      <div class="timer-progress">
+        <div class="timer-progress-inner" id="timer-bar"></div>
+      </div>
+
+      <div id="questions-container"></div>
+
+      <div class="error-box" id="err-exam"></div>
+      <hr />
+      <button class="btn btn-primary" onclick="submitExam()">تسليم الإجابات</button>
+    </div>
+
+    <!-- STEP 4: Result -->
+    <div class="step" id="step-result">
+      <div class="result-section">
+        <div class="score-circle">
+          <div class="score-num" id="score-num"></div>
+          <div class="score-of" id="score-of"></div>
+        </div>
+        <div class="result-msg" id="result-msg"></div>
+        <div class="result-sub" id="result-sub"></div>
+        <div class="info-box">تم حفظ نتيجتك بنجاح في قاعدة البيانات</div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Blocked (already took exam) -->
+    <div class="step" id="step-blocked">
+      <div class="blocked-section">
+        <div class="blocked-icon">🚫</div>
+        <h2>لا يمكن إعادة الاختبار</h2>
+        <p>لقد قمت بإجراء هذا الاختبار مسبقاً.<br />لا يُسمح بأكثر من محاولة واحدة لكل موظف.<br />يرجى التواصل مع المشرف
+          إذا كنت تعتقد أن هذا خطأ.</p>
+      </div>
+    </div>
+
   </div>
 
-  <!-- STEP 5: Blocked (already took exam) -->
-  <div class="step" id="step-blocked">
-    <div class="blocked-section">
-      <div class="blocked-icon">🚫</div>
-      <h2>لا يمكن إعادة الاختبار</h2>
-      <p>لقد قمت بإجراء هذا الاختبار مسبقاً.<br/>لا يُسمح بأكثر من محاولة واحدة لكل موظف.<br/>يرجى التواصل مع المشرف إذا كنت تعتقد أن هذا خطأ.</p>
-    </div>
-  </div>
+  <!-- Footer -->
+  <footer>
+    Developed by: Mohamed Abdeltwab Ali — Process Engineer — WM Group<br />
+    <a href="mailto:mmesba01@elaraby.com">mmesba01@elaraby.com</a>
+  </footer>
 
-</div>
+  <script>
+    /* ═══════════════════════════════════════════════════════
+       CONFIGURATION — update these two values
+    ═══════════════════════════════════════════════════════ */
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSdZu3o6Hab_CCr3Sb3rP94jHl4F6iRSr7KD5oQGHuvLnSDj1LkpjiZToibN2Sv62r/exec";
+    const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
 
-<!-- Footer -->
-<footer>
-  Developed by: Mohamed Abdeltwab Ali — Process Engineer — WM Group<br/>
-  <a href="mailto:mmesba01@elaraby.com">mmesba01@elaraby.com</a>
-</footer>
+    /* ═══════════════════════════════════════════════════════
+       SAP → DEPARTMENT LOOKUP
+    ═══════════════════════════════════════════════════════ */
+    const SAP_TABLE = {
+      "10001": "البلاستيك",
+      "10002": "البلاستيك",
+      "10003": "الكلينشينج",
+      "10004": "الكلينشينج",
+      "10005": "تجميع خط هوفر",
+      "10006": "تجميع خط هوفر",
+      "10007": "تجميع خط تورنيدو",
+      "10008": "تجميع خط تورنيدو",
+      "10009": "التغليف",
+      "10010": "التغليف",
+      "10011": "تحكم في الجودة",
+      "10012": "تحكم في الجودة",
+      "10013": "فحص الجودة",
+      "10014": "فحص الجودة",
+      "10015": "صيانة المرتجعات",
+      "10016": "صيانة المرتجعات"
+    };
 
-<script>
-/* ═══════════════════════════════════════════════════════
-   CONFIGURATION — update these two values
-═══════════════════════════════════════════════════════ */
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZKMDGS4mn8CAYw_5UKSXCyx6QEmgPwc4dSGQDd9qqNffDWoJyxZfK4M-yfVNCNRmv/exec";
-const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
+    /* ═══════════════════════════════════════════════════════
+       QUESTIONS BANK
+    ═══════════════════════════════════════════════════════ */
+    const QUESTIONS = {
+      "البلاستيك": [
+        {
+          type: "mcq",
+          q: "ما هي درجة الحرارة المناسبة لحقن البلاستيك في القوالب؟",
+          options: ["50-100 درجة مئوية", "150-300 درجة مئوية", "300-500 درجة مئوية", "أقل من 50 درجة مئوية"],
+          answer: 1
+        },
+        {
+          type: "tf",
+          q: "يجب فحص القالب البلاستيكي قبل بدء الإنتاج للتأكد من نظافته وخلوه من أي بقايا",
+          answer: "صح"
+        }
+      ],
+      "الكلينشينج": [
+        {
+          type: "mcq",
+          q: "ما هو الهدف الرئيسي من عملية الكلينشينج في تصنيع الغسالات؟",
+          options: ["طلاء الأجزاء المعدنية", "تثبيت الأجزاء المعدنية معاً بدون لحام أو براغي", "قياس سماكة الصفائح", "تنظيف الأجزاء قبل التجميع"],
+          answer: 1
+        },
+        {
+          type: "tf",
+          q: "يمكن استخدام الكلينشينج لتثبيت صفائح معدنية بسماكات مختلفة تماماً دون أي قيود",
+          answer: "خطأ"
+        }
+      ],
+      "تجميع خط هوفر": [
+        {
+          type: "mcq",
+          q: "عند تجميع غسالة Hoover، ما الذي يجب التحقق منه قبل تركيب الباب؟",
+          options: ["لون الغسالة", "محاذاة المفصلات وسلامة الحشية المطاطية", "وزن الغسالة", "رقم الموديل فقط"],
+          answer: 1
+        },
+        {
+          type: "tf",
+          q: "يجب اختبار الغسالة بالماء على خط التجميع قبل إرسالها للتغليف",
+          answer: "صح"
+        }
+      ],
+      "تجميع خط تورنيدو": [
+        {
+          type: "mcq",
+          q: "ما الفرق الرئيسي الذي يجب على عامل التجميع مراعاته عند التبديل بين خط Tornado وخط Hoover؟",
+          options: ["لا يوجد فرق", "اختلاف المواصفات الفنية وتسلسل خطوات التجميع", "فقط اختلاف اللون", "اختلاف عدد العمال فقط"],
+          answer: 1
+        },
+        {
+          type: "tf",
+          q: "يمكن استخدام نفس العدد والأدوات بنفس إعداداتها عند التبديل بين خط Tornado وHoover دون أي تعديل",
+          answer: "خطأ"
+        }
+      ],
+      "التغليف": [
+        {
+          type: "mcq",
+          q: "ما هو الهدف من وضع الفوم الواقي داخل صندوق التغليف؟",
+          options: ["تزيين المنتج", "حماية الغسالة من الصدمات أثناء الشحن والنقل", "تقليل وزن الصندوق", "إخفاء عيوب المنتج"],
+          answer: 1
+        },
+        {
+          type: "tf",
+          q: "يجب التحقق من أن بيانات الباركود على الصندوق تطابق موديل الغسالة بداخله قبل إغلاق الصندوق",
+          answer: "صح"
+        }
+      ],
+      "تحكم في الجودة": [
+        {
+          type: "mcq",
+          q: "ما المقصود بمخطط السيطرة (Control Chart) في ضبط الجودة؟",
+          options: ["رسم بياني لمتابعة أداء العملية واكتشاف الانحرافات", "قائمة بأسماء العمال", "جدول مواعيد الإنتاج", "سجل الحوادث اليومية"],
+          answer: 0
+        },
+        {
+          type: "tf",
+          q: "إذا كانت قيمة Cpk أكبر من 1.33 فهذا يعني أن العملية غير قادرة على تحقيق المواصفات المطلوبة",
+          answer: "خطأ"
+        }
+      ],
+      "فحص الجودة": [
+        {
+          type: "mcq",
+          q: "عند فحص غسالة وإيجاد عيب مظهري طفيف، ما هو الإجراء الصحيح؟",
+          options: ["تجاهله وإرسال الغسالة للتغليف", "تسجيله وعزل الوحدة لمراجعة المشرف", "إصلاحه بدون توثيق", "إرجاعها مباشرة للمورد"],
+          answer: 1
+        },
+        {
+          type: "tf",
+          q: "يكفي الفحص البصري وحده للتحقق من جودة الغسالة دون الحاجة لاختبارات تشغيلية",
+          answer: "خطأ"
+        }
+      ],
+      "صيانة المرتجعات": [
+        {
+          type: "mcq",
+          q: "ما هي أول خطوة يجب اتخاذها عند استلام غسالة مرتجعة من العميل؟",
+          options: ["البدء فوراً في التفكيك", "تسجيل بيانات الوحدة وسبب الإرجاع وفحصها أولاً", "استبدالها بوحدة جديدة مباشرة", "إرسالها للمخزن"],
+          answer: 1
+        },
+        {
+          type: "tf",
+          q: "يجب توثيق كل عملية إصلاح للمرتجعات مع ذكر سبب العطل والإجراء المتخذ",
+          answer: "صح"
+        }
+      ]
+    };
 
-/* ═══════════════════════════════════════════════════════
-   SAP → DEPARTMENT LOOKUP
-═══════════════════════════════════════════════════════ */
-const SAP_TABLE = {
-  "10001": "البلاستيك",
-  "10002": "البلاستيك",
-  "10003": "الكلينشينج",
-  "10004": "الكلينشينج",
-  "10005": "تجميع خط هوفر",
-  "10006": "تجميع خط هوفر",
-  "10007": "تجميع خط تورنيدو",
-  "10008": "تجميع خط تورنيدو",
-  "10009": "التغليف",
-  "10010": "التغليف",
-  "10011": "تحكم في الجودة",
-  "10012": "تحكم في الجودة",
-  "10013": "فحص الجودة",
-  "10014": "فحص الجودة",
-  "10015": "صيانة المرتجعات",
-  "10016": "صيانة المرتجعات"
-};
+    /* ═══════════════════════════════════════════════════════
+       STATE
+    ═══════════════════════════════════════════════════════ */
+    let currentUser = null;
+    let currentDept = "";
+    let currentQuestions = [];
+    let timerInterval = null;
+    let timeLeft = EXAM_DURATION_SECONDS;
 
-/* ═══════════════════════════════════════════════════════
-   QUESTIONS BANK
-═══════════════════════════════════════════════════════ */
-const QUESTIONS = {
-  "البلاستيك": [
-    {
-      type: "mcq",
-      q: "ما هي درجة الحرارة المناسبة لحقن البلاستيك في القوالب؟",
-      options: ["50-100 درجة مئوية", "150-300 درجة مئوية", "300-500 درجة مئوية", "أقل من 50 درجة مئوية"],
-      answer: 1
-    },
-    {
-      type: "tf",
-      q: "يجب فحص القالب البلاستيكي قبل بدء الإنتاج للتأكد من نظافته وخلوه من أي بقايا",
-      answer: "صح"
+    /* ═══════════════════════════════════════════════════════
+       GOOGLE SIGN-IN — renderButton (official, no policy violations)
+    ═══════════════════════════════════════════════════════ */
+    const CLIENT_ID = "345260370366-fv81sbdbl7ts16j20rqn2vpjecsje3he.apps.googleusercontent.com";
+
+    function initGoogleSignIn() {
+      if (typeof google === 'undefined' || !google.accounts) {
+        setTimeout(initGoogleSignIn, 300);
+        return;
+      }
+
+      // Initialize with our callback
+      google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: handleGoogleSignIn,
+        auto_select: false
+      });
+
+      // Render the official Google button into our container
+      google.accounts.id.renderButton(
+        document.getElementById("google-btn-container"),
+        {
+          type: "standard",
+          theme: "outline",
+          size: "large",
+          text: "signin_with",
+          shape: "rectangular",
+          locale: "ar"
+        }
+      );
     }
-  ],
-  "الكلينشينج": [
-    {
-      type: "mcq",
-      q: "ما هو الهدف الرئيسي من عملية الكلينشينج في تصنيع الغسالات؟",
-      options: ["طلاء الأجزاء المعدنية", "تثبيت الأجزاء المعدنية معاً بدون لحام أو براغي", "قياس سماكة الصفائح", "تنظيف الأجزاء قبل التجميع"],
-      answer: 1
-    },
-    {
-      type: "tf",
-      q: "يمكن استخدام الكلينشينج لتثبيت صفائح معدنية بسماكات مختلفة تماماً دون أي قيود",
-      answer: "خطأ"
+
+    // Callback invoked by Google after user picks an account
+    function handleGoogleSignIn(response) {
+      const payload = parseJwt(response.credential);
+      currentUser = {
+        name: payload.name,
+        email: payload.email,
+        picture: payload.picture
+      };
+      showStep("step-sap");
+      renderUserBar("user-bar");
+      checkIfAlreadyTook();
     }
-  ],
-  "تجميع خط هوفر": [
-    {
-      type: "mcq",
-      q: "عند تجميع غسالة Hoover، ما الذي يجب التحقق منه قبل تركيب الباب؟",
-      options: ["لون الغسالة", "محاذاة المفصلات وسلامة الحشية المطاطية", "وزن الغسالة", "رقم الموديل فقط"],
-      answer: 1
-    },
-    {
-      type: "tf",
-      q: "يجب اختبار الغسالة بالماء على خط التجميع قبل إرسالها للتغليف",
-      answer: "صح"
+
+    // Boot after DOM ready
+    document.addEventListener("DOMContentLoaded", () => setTimeout(initGoogleSignIn, 300));
+
+    function parseJwt(token) {
+      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(decodeURIComponent(atob(base64).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join('')));
     }
-  ],
-  "تجميع خط تورنيدو": [
-    {
-      type: "mcq",
-      q: "ما الفرق الرئيسي الذي يجب على عامل التجميع مراعاته عند التبديل بين خط Tornado وخط Hoover؟",
-      options: ["لا يوجد فرق", "اختلاف المواصفات الفنية وتسلسل خطوات التجميع", "فقط اختلاف اللون", "اختلاف عدد العمال فقط"],
-      answer: 1
-    },
-    {
-      type: "tf",
-      q: "يمكن استخدام نفس العدد والأدوات بنفس إعداداتها عند التبديل بين خط Tornado وHoover دون أي تعديل",
-      answer: "خطأ"
-    }
-  ],
-  "التغليف": [
-    {
-      type: "mcq",
-      q: "ما هو الهدف من وضع الفوم الواقي داخل صندوق التغليف؟",
-      options: ["تزيين المنتج", "حماية الغسالة من الصدمات أثناء الشحن والنقل", "تقليل وزن الصندوق", "إخفاء عيوب المنتج"],
-      answer: 1
-    },
-    {
-      type: "tf",
-      q: "يجب التحقق من أن بيانات الباركود على الصندوق تطابق موديل الغسالة بداخله قبل إغلاق الصندوق",
-      answer: "صح"
-    }
-  ],
-  "تحكم في الجودة": [
-    {
-      type: "mcq",
-      q: "ما المقصود بمخطط السيطرة (Control Chart) في ضبط الجودة؟",
-      options: ["رسم بياني لمتابعة أداء العملية واكتشاف الانحرافات", "قائمة بأسماء العمال", "جدول مواعيد الإنتاج", "سجل الحوادث اليومية"],
-      answer: 0
-    },
-    {
-      type: "tf",
-      q: "إذا كانت قيمة Cpk أكبر من 1.33 فهذا يعني أن العملية غير قادرة على تحقيق المواصفات المطلوبة",
-      answer: "خطأ"
-    }
-  ],
-  "فحص الجودة": [
-    {
-      type: "mcq",
-      q: "عند فحص غسالة وإيجاد عيب مظهري طفيف، ما هو الإجراء الصحيح؟",
-      options: ["تجاهله وإرسال الغسالة للتغليف", "تسجيله وعزل الوحدة لمراجعة المشرف", "إصلاحه بدون توثيق", "إرجاعها مباشرة للمورد"],
-      answer: 1
-    },
-    {
-      type: "tf",
-      q: "يكفي الفحص البصري وحده للتحقق من جودة الغسالة دون الحاجة لاختبارات تشغيلية",
-      answer: "خطأ"
-    }
-  ],
-  "صيانة المرتجعات": [
-    {
-      type: "mcq",
-      q: "ما هي أول خطوة يجب اتخاذها عند استلام غسالة مرتجعة من العميل؟",
-      options: ["البدء فوراً في التفكيك", "تسجيل بيانات الوحدة وسبب الإرجاع وفحصها أولاً", "استبدالها بوحدة جديدة مباشرة", "إرسالها للمخزن"],
-      answer: 1
-    },
-    {
-      type: "tf",
-      q: "يجب توثيق كل عملية إصلاح للمرتجعات مع ذكر سبب العطل والإجراء المتخذ",
-      answer: "صح"
-    }
-  ]
-};
 
-/* ═══════════════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════════════ */
-let currentUser = null;
-let currentDept = "";
-let currentQuestions = [];
-let timerInterval = null;
-let timeLeft = EXAM_DURATION_SECONDS;
-
-/* ═══════════════════════════════════════════════════════
-   GOOGLE SIGN-IN — renderButton (official, no policy violations)
-═══════════════════════════════════════════════════════ */
-const CLIENT_ID = "345260370366-fv81sbdbl7ts16j20rqn2vpjecsje3he.apps.googleusercontent.com";
-
-function initGoogleSignIn() {
-  if (typeof google === 'undefined' || !google.accounts) {
-    setTimeout(initGoogleSignIn, 300);
-    return;
-  }
-
-  // Initialize with our callback
-  google.accounts.id.initialize({
-    client_id:   CLIENT_ID,
-    callback:    handleGoogleSignIn,
-    auto_select: false
-  });
-
-  // Render the official Google button into our container
-  google.accounts.id.renderButton(
-    document.getElementById("google-btn-container"),
-    {
-      type:   "standard",
-      theme:  "outline",
-      size:   "large",
-      text:   "signin_with",
-      shape:  "rectangular",
-      locale: "ar"
-    }
-  );
-}
-
-// Callback invoked by Google after user picks an account
-function handleGoogleSignIn(response) {
-  const payload = parseJwt(response.credential);
-  currentUser = {
-    name:    payload.name,
-    email:   payload.email,
-    picture: payload.picture
-  };
-  showStep("step-sap");
-  renderUserBar("user-bar");
-  checkIfAlreadyTook();
-}
-
-// Boot after DOM ready
-document.addEventListener("DOMContentLoaded", () => setTimeout(initGoogleSignIn, 300));
-
-function parseJwt(token) {
-  const base64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-  return JSON.parse(decodeURIComponent(atob(base64).split('').map(c =>
-    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-  ).join('')));
-}
-
-function renderUserBar(id) {
-  document.getElementById(id).innerHTML = `
+    function renderUserBar(id) {
+      document.getElementById(id).innerHTML = `
     <img src="${currentUser.picture}" alt="" referrerpolicy="no-referrer" crossorigin="anonymous"/>
     <div class="user-info">
       <div class="user-name">${currentUser.name}</div>
       <div class="user-email">${currentUser.email}</div>
     </div>`;
-}
+    }
 
-/* ═══════════════════════════════════════════════════════
-   CHECK IF ALREADY TOOK EXAM (via Apps Script)
-═══════════════════════════════════════════════════════ */
-async function checkIfAlreadyTook() {
-  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") return;
-  try {
-    const res = await fetch(APPS_SCRIPT_URL + "?action=check&email=" + encodeURIComponent(currentUser.email));
-    const data = await res.json();
-    if (data.exists) showStep("step-blocked");
-  } catch(e) { console.warn("Check failed:", e); }
-}
+    /* ═══════════════════════════════════════════════════════
+       CHECK IF ALREADY TOOK EXAM (via Apps Script)
+    ═══════════════════════════════════════════════════════ */
+    async function checkIfAlreadyTook() {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") return;
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + "?action=check&email=" + encodeURIComponent(currentUser.email));
+        const data = await res.json();
+        if (data.exists) showStep("step-blocked");
+      } catch (e) { console.warn("Check failed:", e); }
+    }
 
-/* ═══════════════════════════════════════════════════════
-   START EXAM
-═══════════════════════════════════════════════════════ */
-function startExam() {
-  const sap  = document.getElementById("inp-sap").value.trim();
-  const name = document.getElementById("inp-name").value.trim();
-  const err  = document.getElementById("err-sap");
+    /* ═══════════════════════════════════════════════════════
+       START EXAM
+    ═══════════════════════════════════════════════════════ */
+    function startExam() {
+      const sap = document.getElementById("inp-sap").value.trim();
+      const name = document.getElementById("inp-name").value.trim();
+      const err = document.getElementById("err-sap");
 
-  if (!name) {
-    err.style.display = "block";
-    err.textContent = "يرجى إدخال اسمك الكامل";
-    return;
-  }
+      if (!name) {
+        err.style.display = "block";
+        err.textContent = "يرجى إدخال اسمك الكامل";
+        return;
+      }
 
-  if (!sap) {
-    err.style.display = "block";
-    err.textContent = "يرجى إدخال رقم SAP الخاص بك";
-    return;
-  }
+      if (!sap) {
+        err.style.display = "block";
+        err.textContent = "يرجى إدخال رقم SAP الخاص بك";
+        return;
+      }
 
-  const dept = SAP_TABLE[sap];
-  if (!dept) {
-    err.style.display = "block";
-    err.textContent = "رقم SAP غير معروف. يرجى التواصل مع قسم الموارد البشرية.";
-    return;
-  }
+      const dept = SAP_TABLE[sap];
+      if (!dept) {
+        err.style.display = "block";
+        err.textContent = "رقم SAP غير معروف. يرجى التواصل مع قسم الموارد البشرية.";
+        return;
+      }
 
-  // Override the displayed name with what the employee typed
-  currentUser.displayName = name;
+      // Override the displayed name with what the employee typed
+      currentUser.displayName = name;
 
-  err.style.display = "none";
-  currentDept = dept;
-  currentQuestions = shuffle([...QUESTIONS[dept]]);
+      err.style.display = "none";
+      currentDept = dept;
+      currentQuestions = shuffle([...QUESTIONS[dept]]);
 
-  document.getElementById("dept-badge").textContent = "القسم: " + dept;
-  renderUserBar("user-bar-exam");
-  renderQuestions();
-  startTimer();
-  showStep("step-exam");
-}
+      document.getElementById("dept-badge").textContent = "القسم: " + dept;
+      renderUserBar("user-bar-exam");
+      renderQuestions();
+      startTimer();
+      showStep("step-exam");
+    }
 
-/* ═══════════════════════════════════════════════════════
-   RENDER QUESTIONS
-═══════════════════════════════════════════════════════ */
-function renderQuestions() {
-  const container = document.getElementById("questions-container");
-  container.innerHTML = "";
+    /* ═══════════════════════════════════════════════════════
+       RENDER QUESTIONS
+    ═══════════════════════════════════════════════════════ */
+    function renderQuestions() {
+      const container = document.getElementById("questions-container");
+      container.innerHTML = "";
 
-  currentQuestions.forEach((q, qi) => {
-    const block = document.createElement("div");
-    block.className = "question-block";
+      currentQuestions.forEach((q, qi) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
 
-    if (q.type === "mcq") {
-      block.innerHTML = `
-        <p class="q-text"><span class="q-number">س${qi+1}</span> ${q.q}</p>
+        if (q.type === "mcq") {
+          block.innerHTML = `
+        <p class="q-text"><span class="q-number">س${qi + 1}</span> ${q.q}</p>
         ${q.options.map((opt, oi) => `
           <label class="option">
             <input type="radio" name="q${qi}" value="${oi}"/>
             ${opt}
           </label>`).join("")}`;
-    } else {
-      block.innerHTML = `
-        <p class="q-text"><span class="q-number">س${qi+1}</span> ${q.q}</p>
+        } else {
+          block.innerHTML = `
+        <p class="q-text"><span class="q-number">س${qi + 1}</span> ${q.q}</p>
         <div class="tf-options">
           <label class="tf-option true-opt">
             <input type="radio" name="q${qi}" value="صح"/> صح ✓
@@ -839,131 +993,132 @@ function renderQuestions() {
             <input type="radio" name="q${qi}" value="خطأ"/> خطأ ✗
           </label>
         </div>`;
+        }
+        container.appendChild(block);
+      });
     }
-    container.appendChild(block);
-  });
-}
 
-/* ═══════════════════════════════════════════════════════
-   TIMER
-═══════════════════════════════════════════════════════ */
-function startTimer() {
-  timeLeft = EXAM_DURATION_SECONDS;
-  updateTimerDisplay();
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    updateTimerDisplay();
-    if (timeLeft <= 0) { clearInterval(timerInterval); submitExam(true); }
-  }, 1000);
-}
+    /* ═══════════════════════════════════════════════════════
+       TIMER
+    ═══════════════════════════════════════════════════════ */
+    function startTimer() {
+      timeLeft = EXAM_DURATION_SECONDS;
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) { clearInterval(timerInterval); submitExam(true); }
+      }, 1000);
+    }
 
-function updateTimerDisplay() {
-  const m = Math.floor(timeLeft / 60);
-  const s = timeLeft % 60;
-  const display = document.getElementById("timer-display");
-  const bar = document.getElementById("timer-bar");
-  const pct = (timeLeft / EXAM_DURATION_SECONDS) * 100;
+    function updateTimerDisplay() {
+      const m = Math.floor(timeLeft / 60);
+      const s = timeLeft % 60;
+      const display = document.getElementById("timer-display");
+      const bar = document.getElementById("timer-bar");
+      const pct = (timeLeft / EXAM_DURATION_SECONDS) * 100;
 
-  display.textContent = String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
-  bar.style.width = pct + "%";
+      display.textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+      bar.style.width = pct + "%";
 
-  display.classList.remove("warning","danger");
-  if (timeLeft <= 60)  display.classList.add("danger");
-  else if (timeLeft <= 180) display.classList.add("warning");
+      display.classList.remove("warning", "danger");
+      if (timeLeft <= 60) display.classList.add("danger");
+      else if (timeLeft <= 180) display.classList.add("warning");
 
-  if (timeLeft <= 60)
-    bar.style.background = "linear-gradient(90deg, #c0392b, #e74c3c)";
-  else if (timeLeft <= 180)
-    bar.style.background = "linear-gradient(90deg, #e67e22, #f39c12)";
-}
+      if (timeLeft <= 60)
+        bar.style.background = "linear-gradient(90deg, #c0392b, #e74c3c)";
+      else if (timeLeft <= 180)
+        bar.style.background = "linear-gradient(90deg, #e67e22, #f39c12)";
+    }
 
-/* ═══════════════════════════════════════════════════════
-   SUBMIT EXAM
-═══════════════════════════════════════════════════════ */
-async function submitExam(autoSubmit = false) {
-  clearInterval(timerInterval);
+    /* ═══════════════════════════════════════════════════════
+       SUBMIT EXAM
+    ═══════════════════════════════════════════════════════ */
+    async function submitExam(autoSubmit = false) {
+      clearInterval(timerInterval);
 
-  let score = 0;
-  let allAnswered = true;
+      let score = 0;
+      let allAnswered = true;
 
-  currentQuestions.forEach((q, qi) => {
-    const sel = document.querySelector(`input[name="q${qi}"]:checked`);
-    if (!sel) { allAnswered = false; return; }
-    const correct = q.type === "mcq"
-      ? parseInt(sel.value) === q.answer
-      : sel.value === q.answer;
-    if (correct) score++;
-  });
+      currentQuestions.forEach((q, qi) => {
+        const sel = document.querySelector(`input[name="q${qi}"]:checked`);
+        if (!sel) { allAnswered = false; return; }
+        const correct = q.type === "mcq"
+          ? parseInt(sel.value) === q.answer
+          : sel.value === q.answer;
+        if (correct) score++;
+      });
 
-  if (!autoSubmit && !allAnswered) {
-    const err = document.getElementById("err-exam");
-    err.style.display = "block";
-    err.textContent = "يرجى الإجابة على جميع الأسئلة قبل التسليم";
-    startTimer();
-    return;
-  }
+      if (!autoSubmit && !allAnswered) {
+        const err = document.getElementById("err-exam");
+        err.style.display = "block";
+        err.textContent = "يرجى الإجابة على جميع الأسئلة قبل التسليم";
+        startTimer();
+        return;
+      }
 
-  const total = currentQuestions.length;
-  const pct   = Math.round((score / total) * 100);
-  const pass  = pct >= 70;
+      const total = currentQuestions.length;
+      const pct = Math.round((score / total) * 100);
+      const pass = pct >= 70;
 
-  document.getElementById("score-num").textContent = score + "/" + total;
-  document.getElementById("score-of").textContent  = pct + "%";
-  document.getElementById("result-msg").textContent = pass
-    ? "أحسنت! لقد اجتزت الاختبار بنجاح"
-    : "للأسف، لم تتجاوز الحد الأدنى المطلوب (70%)";
-  document.getElementById("result-msg").className = "result-msg " + (pass ? "pass" : "fail");
-  document.getElementById("result-sub").textContent =
-    "القسم: " + currentDept + " | الاسم: " + (currentUser.displayName || currentUser.name);
+      document.getElementById("score-num").textContent = score + "/" + total;
+      document.getElementById("score-of").textContent = pct + "%";
+      document.getElementById("result-msg").textContent = pass
+        ? "أحسنت! لقد اجتزت الاختبار بنجاح"
+        : "للأسف، لم تتجاوز الحد الأدنى المطلوب (70%)";
+      document.getElementById("result-msg").className = "result-msg " + (pass ? "pass" : "fail");
+      document.getElementById("result-sub").textContent =
+        "القسم: " + currentDept + " | الاسم: " + (currentUser.displayName || currentUser.name);
 
-  showStep("step-result");
-  await saveResult(score, total, pct);
-}
+      showStep("step-result");
+      await saveResult(score, total, pct);
+    }
 
-/* ═══════════════════════════════════════════════════════
-   SAVE TO GOOGLE SHEETS
-═══════════════════════════════════════════════════════ */
-async function saveResult(score, total, pct) {
-  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
-    console.log("Result (test mode — no URL set):", {
-      name: currentUser.name, email: currentUser.email,
-      department: currentDept, score: score+"/"+total, percent: pct+"%"
-    });
-    return;
-  }
-  try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify({
-        action:     "save",
-        name:       currentUser.displayName || currentUser.name,
-        email:      currentUser.email,
-        sap:        document.getElementById("inp-sap").value.trim(),
-        department: currentDept,
-        score:      score + "/" + total,
-        percent:    pct + "%",
-        timestamp:  new Date().toLocaleString("ar-EG", { timeZone: "Africa/Cairo" })
-      })
-    });
-  } catch(e) { console.error("Save failed:", e); }
-}
+    /* ═══════════════════════════════════════════════════════
+       SAVE TO GOOGLE SHEETS
+    ═══════════════════════════════════════════════════════ */
+    async function saveResult(score, total, pct) {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
+        console.log("Result (test mode — no URL set):", {
+          name: currentUser.name, email: currentUser.email,
+          department: currentDept, score: score + "/" + total, percent: pct + "%"
+        });
+        return;
+      }
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({
+            action: "save",
+            name: currentUser.displayName || currentUser.name,
+            email: currentUser.email,
+            sap: document.getElementById("inp-sap").value.trim(),
+            department: currentDept,
+            score: score + "/" + total,
+            percent: pct + "%",
+            timestamp: new Date().toLocaleString("ar-EG", { timeZone: "Africa/Cairo" })
+          })
+        });
+      } catch (e) { console.error("Save failed:", e); }
+    }
 
-/* ═══════════════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════════════ */
-function showStep(id) {
-  document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
+    /* ═══════════════════════════════════════════════════════
+       HELPERS
+    ═══════════════════════════════════════════════════════ */
+    function showStep(id) {
+      document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
 
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-</script>
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+  </script>
 </body>
+
 </html>
