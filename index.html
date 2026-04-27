@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -454,7 +455,8 @@
       <div id="g_id_onload"
         data-client_id="345260370366-fv81sbdbl7ts16j20rqn2vpjecsje3he.apps.googleusercontent.com"
         data-callback="handleGoogleSignIn"
-        data-auto_prompt="false">
+        data-auto_prompt="false"
+        data-auto_select="false">
       </div>
       <div id="g_id_signin"
         data-type="standard"
@@ -470,7 +472,9 @@
   <!-- STEP 2: SAP Entry -->
   <div class="step" id="step-sap">
     <div class="user-bar" id="user-bar"></div>
-    <p class="step-title">أدخل رقم SAP الخاص بك</p>
+    <p class="step-title">أدخل بياناتك للبدء</p>
+    <label for="inp-name">الاسم الكامل</label>
+    <input type="text" id="inp-name" placeholder="مثال: محمد أحمد"/>
     <label for="inp-sap">رقم SAP</label>
     <input type="text" id="inp-sap" placeholder="مثال: 10001" inputmode="numeric"/>
     <div class="error-box" id="err-sap"></div>
@@ -529,7 +533,7 @@
 /* ═══════════════════════════════════════════════════════
    CONFIGURATION — update these two values
 ═══════════════════════════════════════════════════════ */
-const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8dal6W96bSKRaBjKH4VOU--Z7SI2qDsCGBWqpg5ZRk2q2FcQGc5-79rrqlONh9HY/exec";
 const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
 
 /* ═══════════════════════════════════════════════════════
@@ -720,8 +724,15 @@ async function checkIfAlreadyTook() {
    START EXAM
 ═══════════════════════════════════════════════════════ */
 function startExam() {
-  const sap = document.getElementById("inp-sap").value.trim();
-  const err = document.getElementById("err-sap");
+  const sap  = document.getElementById("inp-sap").value.trim();
+  const name = document.getElementById("inp-name").value.trim();
+  const err  = document.getElementById("err-sap");
+
+  if (!name) {
+    err.style.display = "block";
+    err.textContent = "يرجى إدخال اسمك الكامل";
+    return;
+  }
 
   if (!sap) {
     err.style.display = "block";
@@ -735,6 +746,9 @@ function startExam() {
     err.textContent = "رقم SAP غير معروف. يرجى التواصل مع قسم الموارد البشرية.";
     return;
   }
+
+  // Override the displayed name with what the employee typed
+  currentUser.displayName = name;
 
   err.style.display = "none";
   currentDept = dept;
@@ -852,7 +866,7 @@ async function submitExam(autoSubmit = false) {
     : "للأسف، لم تتجاوز الحد الأدنى المطلوب (70%)";
   document.getElementById("result-msg").className = "result-msg " + (pass ? "pass" : "fail");
   document.getElementById("result-sub").textContent =
-    "القسم: " + currentDept + " | الاسم: " + currentUser.name;
+    "القسم: " + currentDept + " | الاسم: " + (currentUser.displayName || currentUser.name);
 
   showStep("step-result");
   await saveResult(score, total, pct);
@@ -875,12 +889,13 @@ async function saveResult(score, total, pct) {
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
         action:     "save",
-        name:       currentUser.name,
+        name:       currentUser.displayName || currentUser.name,
         email:      currentUser.email,
         sap:        document.getElementById("inp-sap").value.trim(),
         department: currentDept,
         score:      score + "/" + total,
-        percent:    pct + "%"
+        percent:    pct + "%",
+        timestamp:  new Date().toLocaleString("ar-EG", { timeZone: "Africa/Cairo" })
       })
     });
   } catch(e) { console.error("Save failed:", e); }
