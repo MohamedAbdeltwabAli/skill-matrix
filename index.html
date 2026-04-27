@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Factory Skill Matrix – Test</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 36px;
+      width: 100%;
+      max-width: 560px;
+    }
+    h1 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; }
+    .subtitle { font-size: 13px; color: #888; margin-bottom: 28px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 18px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #4f46e5; }
+    .badge {
+      display: inline-block;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .error {
+      background: #fff0f0;
+      color: #c0392b;
+      border: 1px solid #f5c6c6;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .question-block { margin-bottom: 22px; }
+    .question-block p { font-size: 14px; font-weight: 600; color: #222; margin-bottom: 10px; }
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #333;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .option:hover { background: #f5f3ff; border-color: #c4b5fd; }
+    .option input[type=radio] { accent-color: #4f46e5; }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    button:hover { background: #4338ca; }
+    .result {
+      text-align: center;
+      padding: 24px 0 8px;
+    }
+    .result .score { font-size: 48px; font-weight: 700; color: #4f46e5; }
+    .result .score-label { font-size: 14px; color: #888; margin-top: 4px; }
+    .result .msg { font-size: 15px; color: #333; margin-top: 16px; font-weight: 500; }
+    #step-lookup, #step-exam, #step-result { display: none; }
+    #step-lookup { display: block; }
+    hr { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>Factory Skill Matrix</h1>
+  <p class="subtitle">Test version — enter your SAP number to begin</p>
+
+  <!-- STEP 1: Identity lookup -->
+  <div id="step-lookup">
+    <label for="inp-name">Full name</label>
+    <input type="text" id="inp-name" placeholder="e.g. Ahmed Hassan" />
+
+    <label for="inp-sap">SAP number</label>
+    <input type="text" id="inp-sap" placeholder="e.g. 10042" />
+
+    <div class="error" id="err-msg">SAP number not recognized. Please contact HR.</div>
+
+    <button onclick="startExam()">Start exam</button>
+  </div>
+
+  <!-- STEP 2: Exam questions -->
+  <div id="step-exam">
+    <div class="badge" id="dept-badge"></div>
+    <div id="questions-container"></div>
+    <hr/>
+    <button onclick="submitExam()">Submit answers</button>
+  </div>
+
+  <!-- STEP 3: Result -->
+  <div id="step-result">
+    <div class="result">
+      <div class="score" id="score-display"></div>
+      <div class="score-label">correct answers</div>
+      <div class="msg" id="result-msg"></div>
+    </div>
+    <hr/>
+    <button onclick="resetApp()" style="background:#6b7280;">Take another exam</button>
+  </div>
+</div>
+
+<script>
+  /* ── SAP → Department lookup table ─────────────────────────── */
+  const SAP_TABLE = {
+    "10001": "Welding",
+    "10002": "Welding",
+    "10003": "Quality Control",
+    "10004": "Quality Control",
+    "10005": "Maintenance",
+    "10006": "Maintenance",
+    "10007": "Assembly",
+    "10008": "Assembly"
+  };
+
+  /* ── Questions per department ───────────────────────────────── */
+  const QUESTIONS = {
+    "Welding": [
+      {
+        q: "What is the correct PPE required before starting a welding operation?",
+        options: ["Safety glasses only", "Welding helmet, gloves, and fire-resistant jacket", "Hard hat and vest", "No PPE needed indoors"],
+        answer: 1
+      },
+      {
+        q: "What gas is commonly used in MIG welding as a shielding gas?",
+        options: ["Oxygen", "Nitrogen", "Argon or CO₂ mix", "Hydrogen"],
+        answer: 2
+      },
+      {
+        q: "What does a porosity defect in a weld indicate?",
+        options: ["Too much heat", "Trapped gas during solidification", "Wrong electrode angle", "Correct weld"],
+        answer: 1
+      }
+    ],
+    "Quality Control": [
+      {
+        q: "Which tool is used to measure the internal diameter of a bore?",
+        options: ["Vernier caliper", "Bore gauge", "Micrometer", "Tape measure"],
+        answer: 1
+      },
+      {
+        q: "What does 'Cpk' measure in a process?",
+        options: ["Cycle time", "Process capability relative to spec limits", "Cost per unit", "Customer satisfaction"],
+        answer: 1
+      },
+      {
+        q: "In a control chart, what does a point outside the control limits indicate?",
+        options: ["Normal variation", "Special cause variation", "Process improvement", "Random noise"],
+        answer: 1
+      }
+    ],
+    "Maintenance": [
+      {
+        q: "What does LOTO stand for in maintenance safety?",
+        options: ["Lock Out Tag Out", "Load Over Transfer Output", "Line Off Test Operation", "None of the above"],
+        answer: 0
+      },
+      {
+        q: "What is preventive maintenance?",
+        options: ["Fixing equipment after it breaks", "Scheduled maintenance to prevent failures", "Ignoring minor faults", "Only cleaning machines"],
+        answer: 1
+      },
+      {
+        q: "Which type of bearing failure is caused by insufficient lubrication?",
+        options: ["Fatigue spalling", "Fretting", "Smearing", "Electrical pitting"],
+        answer: 2
+      }
+    ],
+    "Assembly": [
+      {
+        q: "What does a torque wrench ensure during assembly?",
+        options: ["Fasteners are tightened to the correct force", "Parts are aligned correctly", "Welding quality", "Paint adhesion"],
+        answer: 0
+      },
+      {
+        q: "What is a Poka-Yoke device?",
+        options: ["A Japanese lunch box", "An error-proofing mechanism", "A torque specification sheet", "A type of conveyor"],
+        answer: 1
+      },
+      {
+        q: "What should you do if you find a defective part during assembly?",
+        options: ["Continue and report later", "Discard it and say nothing", "Tag it and remove it from the line", "Force it to fit"],
+        answer: 2
+      }
+    ]
+  };
+
+  let currentUser = {};
+  let currentDept = "";
+
+  function startExam() {
+    const name = document.getElementById("inp-name").value.trim();
+    const sap  = document.getElementById("inp-sap").value.trim();
+    const err  = document.getElementById("err-msg");
+
+    if (!name || !sap) { err.style.display = "block"; err.textContent = "Please enter both your name and SAP number."; return; }
+
+    const dept = SAP_TABLE[sap];
+    if (!dept) { err.style.display = "block"; err.textContent = "SAP number not recognized. Please contact HR."; return; }
+
+    err.style.display = "none";
+    currentUser = { name, sap };
+    currentDept = dept;
+
+    document.getElementById("dept-badge").textContent = dept + " — " + name;
+    renderQuestions(QUESTIONS[dept]);
+
+    document.getElementById("step-lookup").style.display = "none";
+    document.getElementById("step-exam").style.display   = "block";
+  }
+
+  function renderQuestions(questions) {
+    const container = document.getElementById("questions-container");
+    container.innerHTML = "";
+    questions.forEach((q, qi) => {
+      const block = document.createElement("div");
+      block.className = "question-block";
+      block.innerHTML = `<p>Q${qi+1}. ${q.q}</p>` +
+        q.options.map((opt, oi) =>
+          `<label class="option"><input type="radio" name="q${qi}" value="${oi}"> ${opt}</label>`
+        ).join("");
+      container.appendChild(block);
+    });
+  }
+
+  function submitExam() {
+    const questions = QUESTIONS[currentDept];
+    let score = 0;
+    let allAnswered = true;
+
+    questions.forEach((q, qi) => {
+      const selected = document.querySelector(`input[name="q${qi}"]:checked`);
+      if (!selected) { allAnswered = false; return; }
+      if (parseInt(selected.value) === q.answer) score++;
+    });
+
+    if (!allAnswered) { alert("Please answer all questions before submitting."); return; }
+
+    const total = questions.length;
+    const pct   = Math.round((score / total) * 100);
+
+    document.getElementById("score-display").textContent = score + "/" + total;
+    document.getElementById("result-msg").textContent =
+      pct >= 70
+        ? "Well done, " + currentUser.name + "! You passed."
+        : "Keep practicing, " + currentUser.name + ". Score below 70%.";
+
+    document.getElementById("step-exam").style.display   = "none";
+    document.getElementById("step-result").style.display = "block";
+
+    console.log("RESULT SAVED (test mode):", {
+      name: currentUser.name,
+      sap:  currentUser.sap,
+      department: currentDept,
+      score: score + "/" + total,
+      percent: pct + "%",
+      date: new Date().toLocaleString()
+    });
+  }
+
+  function resetApp() {
+    document.getElementById("inp-name").value = "";
+    document.getElementById("inp-sap").value  = "";
+    document.getElementById("step-result").style.display = "none";
+    document.getElementById("step-lookup").style.display = "block";
+    currentUser = {};
+    currentDept = "";
+  }
+</script>
+</body>
+</html>
