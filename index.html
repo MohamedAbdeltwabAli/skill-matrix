@@ -605,6 +605,39 @@
       border-top: 1px solid var(--border);
       margin: 20px 0;
     }
+
+    /* Department preview card */
+    .dept-preview {
+      display: none;
+      background: linear-gradient(135deg, #f0fff6, #e8f5e9);
+      border: 1.5px solid #4caf50;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      text-align: center;
+      animation: slideUp 0.3s ease;
+    }
+    .dept-preview .dp-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .dept-preview .dp-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1a7a4a;
+    }
+    .dept-preview .dp-confirm {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Password field revealed after SAP match */
+    .password-section {
+      display: none;
+      animation: slideUp 0.3s ease;
+    }
   </style>
 </head>
 
@@ -639,10 +672,25 @@
     <div class="step" id="step-sap">
       <div class="user-bar" id="user-bar"></div>
       <p class="step-title">أدخل بياناتك للبدء</p>
-      <label for="inp-name">الاسم الكامل</label>
-      <input type="text" id="inp-name" placeholder="مثال: محمد أحمد" />
+
       <label for="inp-sap">رقم SAP</label>
       <input type="text" id="inp-sap" placeholder="مثال: 10001" inputmode="numeric" />
+
+      <!-- Department preview — appears once a valid SAP is entered -->
+      <div class="dept-preview" id="dept-preview">
+        <div class="dp-label">تم اكتشاف قسمك</div>
+        <div class="dp-name" id="dp-dept-name"></div>
+        <div class="dp-confirm">إذا كان هذا قسمك الصحيح، أكمل بياناتك بالأسفل ↓</div>
+      </div>
+
+      <!-- Name + Password — revealed only after valid SAP -->
+      <div class="password-section" id="password-section">
+        <label for="inp-name">الاسم الكامل</label>
+        <input type="text" id="inp-name" placeholder="مثال: محمد أحمد" readonly />
+        <label for="inp-password">كلمة المرور الشخصية</label>
+        <input type="password" id="inp-password" placeholder="أدخل كلمة المرور المرسلة إليك" autocomplete="off" />
+      </div>
+
       <div class="error-box" id="err-sap"></div>
       <button class="btn btn-primary" id="btn-start" onclick="startExam()">بدء الاختبار</button>
     </div>
@@ -702,30 +750,30 @@
     /* ═══════════════════════════════════════════════════════
        CONFIGURATION — update these two values
     ═══════════════════════════════════════════════════════ */
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSdZu3o6Hab_CCr3Sb3rP94jHl4F6iRSr7KD5oQGHuvLnSDj1LkpjiZToibN2Sv62r/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCMjld87ASW2Wy6RDtXRu1FwzRLdtflOcZ0mjIowjg655_bpgVNrh-jPlx5aVONZGH/exec";
     const EXAM_DURATION_SECONDS = 15 * 60; // 15 minutes
+    const MAX_QUESTIONS = 10;              // Questions shown per exam (picked randomly from the full bank)
 
     /* ═══════════════════════════════════════════════════════
-       SAP → DEPARTMENT LOOKUP
+       SAP → DEPARTMENT LOOKUP (loaded dynamically from Google Sheets)
     ═══════════════════════════════════════════════════════ */
-    const SAP_TABLE = {
-      "10001": "البلاستيك",
-      "10002": "البلاستيك",
-      "10003": "الكلينشينج",
-      "10004": "الكلينشينج",
-      "10005": "تجميع خط هوفر",
-      "10006": "تجميع خط هوفر",
-      "10007": "تجميع خط تورنيدو",
-      "10008": "تجميع خط تورنيدو",
-      "10009": "التغليف",
-      "10010": "التغليف",
-      "10011": "تحكم في الجودة",
-      "10012": "تحكم في الجودة",
-      "10013": "فحص الجودة",
-      "10014": "فحص الجودة",
-      "10015": "صيانة المرتجعات",
-      "10016": "صيانة المرتجعات"
-    };
+    // Populated at runtime from the "Employees" sheet
+    // Structure: { "SAP_NUMBER": { name: "...", department: "..." }, ... }
+    let SAP_TABLE = {};
+
+    async function loadEmployees() {
+      const status = document.getElementById("signin-status");
+      status.textContent = "⏳ جاري تحميل بيانات الموظفين...";
+      try {
+        const res  = await fetch(APPS_SCRIPT_URL + "?action=getEmployees");
+        const data = await res.json();
+        SAP_TABLE  = data.employees || {};
+        status.textContent = "";
+      } catch (e) {
+        status.textContent = "⚠️ تعذر تحميل بيانات الموظفين. تأكد من الاتصال بالإنترنت وأعد تحميل الصفحة.";
+        console.error("Failed to load employees:", e);
+      }
+    }
 
     /* ═══════════════════════════════════════════════════════
        QUESTIONS BANK
@@ -891,8 +939,47 @@
       checkIfAlreadyTook();
     }
 
-    // Boot after DOM ready
-    document.addEventListener("DOMContentLoaded", () => setTimeout(initGoogleSignIn, 300));
+    // Boot after DOM ready — load employees first, then init Google Sign-In
+    document.addEventListener("DOMContentLoaded", () => {
+      loadEmployees();
+      setTimeout(initGoogleSignIn, 300);
+    });
+
+    // Auto-fill name when SAP is entered
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("inp-sap").addEventListener("input", function () {
+        const employee    = SAP_TABLE[this.value.trim()];
+        const nameInput   = document.getElementById("inp-name");
+        const preview     = document.getElementById("dept-preview");
+        const pwdSection  = document.getElementById("password-section");
+        const dpDeptName  = document.getElementById("dp-dept-name");
+        const pwdInput    = document.getElementById("inp-password");
+
+        if (employee) {
+          // Show department preview
+          dpDeptName.textContent   = employee.department;
+          preview.style.display    = "block";
+          // Reveal name + password fields
+          pwdSection.style.display = "block";
+          nameInput.value          = employee.name;
+          nameInput.readOnly       = true;
+          nameInput.style.background = "#f0fff6";
+          nameInput.style.color      = "#1a7a4a";
+          nameInput.title = "الاسم مجلوب تلقائياً من بيانات الشركة";
+          pwdInput.value = ""; // clear on SAP change
+          pwdInput.focus();
+        } else {
+          // Hide everything
+          preview.style.display    = "none";
+          pwdSection.style.display = "none";
+          nameInput.value          = "";
+          nameInput.readOnly       = false;
+          nameInput.style.background = "";
+          nameInput.style.color      = "";
+          nameInput.title = "";
+        }
+      });
+    });
 
     function parseJwt(token) {
       const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
@@ -914,7 +1001,6 @@
        CHECK IF ALREADY TOOK EXAM (via Apps Script)
     ═══════════════════════════════════════════════════════ */
     async function checkIfAlreadyTook() {
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") return;
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=check&email=" + encodeURIComponent(currentUser.email));
         const data = await res.json();
@@ -926,15 +1012,9 @@
        START EXAM
     ═══════════════════════════════════════════════════════ */
     function startExam() {
-      const sap = document.getElementById("inp-sap").value.trim();
-      const name = document.getElementById("inp-name").value.trim();
-      const err = document.getElementById("err-sap");
-
-      if (!name) {
-        err.style.display = "block";
-        err.textContent = "يرجى إدخال اسمك الكامل";
-        return;
-      }
+      const sap      = document.getElementById("inp-sap").value.trim();
+      const password = document.getElementById("inp-password").value.trim();
+      const err      = document.getElementById("err-sap");
 
       if (!sap) {
         err.style.display = "block";
@@ -942,21 +1022,33 @@
         return;
       }
 
-      const dept = SAP_TABLE[sap];
-      if (!dept) {
+      const employee = SAP_TABLE[sap];
+      if (!employee) {
         err.style.display = "block";
-        err.textContent = "رقم SAP غير معروف. يرجى التواصل مع قسم الموارد البشرية.";
+        err.textContent = "رقم SAP غير معروف. يرجى التواصل مع المهندس المسؤول.";
         return;
       }
 
-      // Override the displayed name with what the employee typed
-      currentUser.displayName = name;
+      // Password validation
+      if (!password) {
+        err.style.display = "block";
+        err.textContent = "يرجى إدخال كلمة المرور الشخصية";
+        return;
+      }
+      if (password !== employee.password) {
+        err.style.display = "block";
+        err.textContent = "⚠️ كلمة المرور غير صحيحة. تحقق من الكلمة المرسلة إليك.";
+        return;
+      }
+
+      // Name comes from the Employees sheet
+      currentUser.displayName = employee.name;
 
       err.style.display = "none";
-      currentDept = dept;
-      currentQuestions = shuffle([...QUESTIONS[dept]]);
+      currentDept = employee.department;
+      currentQuestions = shuffle([...QUESTIONS[currentDept]]).slice(0, MAX_QUESTIONS);
 
-      document.getElementById("dept-badge").textContent = "القسم: " + dept;
+      document.getElementById("dept-badge").textContent = "القسم: " + currentDept;
       renderUserBar("user-bar-exam");
       renderQuestions();
       startTimer();
@@ -1078,13 +1170,6 @@
        SAVE TO GOOGLE SHEETS
     ═══════════════════════════════════════════════════════ */
     async function saveResult(score, total, pct) {
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_APPS_SCRIPT_URL_HERE") {
-        console.log("Result (test mode — no URL set):", {
-          name: currentUser.name, email: currentUser.email,
-          department: currentDept, score: score + "/" + total, percent: pct + "%"
-        });
-        return;
-      }
       try {
         await fetch(APPS_SCRIPT_URL, {
           method: "POST",
