@@ -731,6 +731,24 @@
       display: none;
       animation: slideUp 0.3s ease;
     }
+
+    /* Password hint below the input */
+    .pwd-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      margin-bottom: 18px;
+      background: #f0f7ff;
+      border: 1px solid #b8d4f8;
+      border-radius: 8px;
+      padding: 8px 12px;
+      line-height: 1.7;
+      text-align: right;
+    }
+
+    .pwd-hint strong {
+      color: var(--primary);
+    }
   </style>
 </head>
 
@@ -782,7 +800,7 @@
         <input type="text" id="inp-name" placeholder="مثال: محمد أحمد" readonly />
         <label for="inp-password">كلمة المرور الشخصية</label>
         <div class="pwd-wrapper">
-          <input type="password" id="inp-password" placeholder="أدخل كلمة المرور المرسلة إليك" autocomplete="off" />
+          <input type="password" id="inp-password" placeholder="آخر رقمين من الرقم القومي + آخر رقمين من رقم الهاتف" autocomplete="off" />
           <button type="button" class="pwd-eye" onclick="togglePassword()" title="إظهار/إخفاء كلمة المرور"
             id="btn-pwd-eye">
             <!-- Eye open SVG -->
@@ -801,6 +819,11 @@
             </svg>
           </button>
         </div>
+        <p class="pwd-hint">
+          🔑 <strong>كيف أعرف كلمة المرور؟</strong><br />
+          كلمة المرور = آخر رقمين من رقمك القومي + آخر رقمين من رقم هاتفك<br />
+          <strong>مثال:</strong> رقم قومي ينتهي بـ <strong>91</strong> وهاتف ينتهي بـ <strong>78</strong> → كلمة المرور: <strong>9178</strong>
+        </p>
       </div>
 
       <div class="error-box" id="err-sap"></div>
@@ -1074,9 +1097,13 @@
 
         if (!verifyData.valid) {
           err.style.display = "block";
-          err.textContent = verifyData.error === "WRONG_PASSWORD"
-            ? "⚠️ كلمة المرور غير صحيحة. تحقق من الكلمة المرسلة إليك."
-            : "رقم SAP غير معروف. يرجى التواصل مع المهندس المسؤول.";
+          if (verifyData.error === "WRONG_PASSWORD") {
+            err.textContent = "⚠️ كلمة المرور غير صحيحة. تحقق من آخر رقمين من رقمك القومي وهاتفك.";
+          } else if (verifyData.error === "NOT_AUTHORIZED") {
+            err.textContent = "🚫 غير مخوّل بإجراء الاختبار حالياً. يرجى التواصل مع المهندس المسؤول.";
+          } else {
+            err.textContent = "رقم SAP غير معروف. يرجى التواصل مع المهندس المسؤول.";
+          }
           btn.disabled = false;
           btn.textContent = "بدء الاختبار";
           return;
