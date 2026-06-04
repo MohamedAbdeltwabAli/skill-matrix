@@ -985,9 +985,10 @@ for (const key in raw) {
 
     // Boot after DOM ready — load employees first, then init Google Sign-In
     document.addEventListener("DOMContentLoaded", () => {
-      loadEmployees();
-      setTimeout(initGoogleSignIn, 300);
-    });
+  loadEmployees().then(() => {
+    initGoogleSignIn();
+  });
+});
 
     // Auto-fill name when SAP is entered
     document.addEventListener("DOMContentLoaded", () => {
