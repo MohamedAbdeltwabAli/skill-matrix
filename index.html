@@ -916,7 +916,11 @@
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=getEmployees");
         const data = await res.json();
-        SAP_TABLE = data.employees || {};
+       const raw = data.employees || {};
+SAP_TABLE = {};
+for (const key in raw) {
+  SAP_TABLE[key.toString().trim()] = raw[key];
+}
         status.textContent = "";
       } catch (e) {
         status.textContent = "⚠️ تعذر تحميل بيانات الموظفين. تأكد من الاتصال بالإنترنت وأعد تحميل الصفحة.";
@@ -988,7 +992,7 @@
     // Auto-fill name when SAP is entered
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("inp-sap").addEventListener("input", function () {
-        const employee = SAP_TABLE[this.value.trim()];
+       const employee = SAP_TABLE[this.value.trim()] || SAP_TABLE[parseInt(this.value.trim())];
         const nameInput = document.getElementById("inp-name");
         const preview = document.getElementById("dept-preview");
         const pwdSection = document.getElementById("password-section");
@@ -1071,7 +1075,7 @@
         return;
       }
 
-      const employee = SAP_TABLE[sap];
+      const employee = SAP_TABLE[sap] || SAP_TABLE[parseInt(sap)];
       if (!employee) {
         err.style.display = "block";
         err.textContent = "رقم SAP غير معروف. يرجى التواصل مع المهندس المسؤول.";
