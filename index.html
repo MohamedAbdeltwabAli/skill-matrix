@@ -909,7 +909,8 @@
     // Structure: { "SAP_NUMBER": { name: "...", department: "..." }, ... }
     let SAP_TABLE = {};
     let questionsCache = {}; // { department: [questions] } — pre-fetched while employee types password
-   
+   let questionsCache = {};
+
     async function loadEmployees() {
       const status = document.getElementById("signin-status");
       status.textContent = "⏳ جاري تحميل بيانات الموظفين...";
