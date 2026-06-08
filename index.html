@@ -909,7 +909,7 @@
     // Structure: { "SAP_NUMBER": { name: "...", department: "..." }, ... }
     let SAP_TABLE = {};
     let questionsCache = {}; // { department: [questions] } — pre-fetched while employee types password
-
+   
     async function loadEmployees() {
       const status = document.getElementById("signin-status");
       status.textContent = "⏳ جاري تحميل بيانات الموظفين...";
@@ -1121,12 +1121,7 @@ for (const key in raw) {
         currentUser.displayName = verifyData.name;
         currentDept = verifyData.department;
 
-        // Use pre-fetched questions if available, otherwise fetch now
-        if (questionsCache[currentDept]) {
-          currentQuestions = questionsCache[currentDept];
-          launchExam();
-          return;
-        }
+        // Always fetch fresh questions — don't use prefetch cache
 
         btn.innerHTML = '<span class="spinner"></span> جاري تحميل الأسئلة...';
         const qRes = await fetch(APPS_SCRIPT_URL + "?action=getQuestions&department=" + encodeURIComponent(currentDept));
