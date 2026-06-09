@@ -896,6 +896,9 @@
     <a href="mailto:mmesba01@elaraby.com">mmesba01@elaraby.com</a>
   </footer>
 
+  <!-- Supabase Database Connection -->
+  <script src="js/supabase.js"></script>
+  
   <script>
     /* ═══════════════════════════════════════════════════════
        CONFIGURATION — update these two values
@@ -916,13 +919,33 @@
       const status = document.getElementById("signin-status");
       status.textContent = "⏳ جاري تحميل بيانات الموظفين...";
       try {
-        const res = await fetch(APPS_SCRIPT_URL + "?action=getEmployees");
-        const data = await res.json();
-       const raw = data.employees || {};
-SAP_TABLE = {};
-for (const key in raw) {
-  SAP_TABLE[key.toString().trim()] = raw[key];
-}
+        // Wait for Supabase to be ready
+        if (typeof db === 'undefined') {
+          status.textContent = "⚠️ قاعدة البيانات غير متاحة. أعد تحميل الصفحة.";
+          return;
+        }
+
+        // Query Supabase for all employees with their departments
+        const { data: employees, error } = await db
+          .from('employees')
+          .select('sap, name, department_id, departments(name)')
+          .order('name');
+
+        if (error) throw error;
+
+        SAP_TABLE = {};
+        if (employees) {
+          employees.forEach(emp => {
+            const deptName = emp.departments?.name || 'غير محدد';
+            SAP_TABLE[emp.sap.toString().trim()] = {
+              sap: emp.sap,
+              name: emp.name,
+              department: deptName,
+              department_id: emp.department_id
+            };
+          });
+        }
+        
         status.textContent = "";
       } catch (e) {
         status.textContent = "⚠️ تعذر تحميل بيانات الموظفين. تأكد من الاتصال بالإنترنت وأعد تحميل الصفحة.";
@@ -1091,37 +1114,49 @@ for (const key in raw) {
         return;
       }
 
-      // Fix 1: verify password SERVER-SIDE — password never stored in browser
+      // Verify password against Supabase database
       err.style.display = "none";
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> جاري التحقق...';
 
       try {
-        const verifyRes = await fetch(
-          APPS_SCRIPT_URL +
-          "?action=verifyEmployee" +
-          "&sap=" + encodeURIComponent(sap) +
-          "&password=" + encodeURIComponent(password)
-        );
-        const verifyData = await verifyRes.json();
+        // Query Supabase for the employee with this SAP and password
+        const { data: empData, error: empError } = await db
+          .from('employees')
+          .select('id, sap, name, password, status, department_id, departments(name)')
+          .eq('sap', sap)
+          .maybeSingle();
 
-        if (!verifyData.valid) {
+        if (empError || !empData) {
           err.style.display = "block";
-          if (verifyData.error === "WRONG_PASSWORD") {
-            err.textContent = "⚠️ كلمة المرور غير صحيحة. تحقق من آخر رقمين من رقمك القومي وهاتفك.";
-          } else if (verifyData.error === "NOT_AUTHORIZED") {
-            err.textContent = "🚫 غير مخوّل بإجراء الاختبار حالياً. يرجى التواصل مع المهندس المسؤول.";
-          } else {
-            err.textContent = "رقم SAP غير معروف. يرجى التواصل مع المهندس المسؤول.";
-          }
+          err.textContent = "رقم SAP غير موجود. يرجى التواصل مع المهندس المسؤول.";
           btn.disabled = false;
           btn.textContent = "بدء الاختبار";
           return;
         }
 
-        // Password valid — use verified name & dept from server
-        currentUser.displayName = verifyData.name;
-        currentDept = verifyData.department;
+        // Verify password (case-sensitive)
+        if (empData.password !== password) {
+          err.style.display = "block";
+          err.textContent = "⚠️ كلمة المرور غير صحيحة.";
+          btn.disabled = false;
+          btn.textContent = "بدء الاختبار";
+          return;
+        }
+
+        // Check if employee is active
+        if (empData.status === 0) {
+          err.style.display = "block";
+          err.textContent = "🚫 حسابك موقوف. يرجى التواصل مع المهندس المسؤول.";
+          btn.disabled = false;
+          btn.textContent = "بدء الاختبار";
+          return;
+        }
+
+        // Password valid — use verified name & dept from database
+        currentUser = currentUser || {};
+        currentUser.displayName = empData.name;
+        currentDept = empData.departments?.name || 'غير محدد';
 
         // Always fetch fresh questions — don't use prefetch cache
 
@@ -1332,7 +1367,6 @@ for (const key in raw) {
 
   <!-- Supabase Database Connection -->
   <script src="js/supabase.js"></script>
-  <script src="js/exam.js"></script>
 
 </body>
 
